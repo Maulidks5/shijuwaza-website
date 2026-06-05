@@ -9,19 +9,13 @@ use App\Models\ResourceItem;
 use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\Process\Process;
 
 class ResourceItemController extends Controller
 {
     use HandlesCmsUploads;
-
-    private const PDF_TARGET_BYTES = 2 * 1024 * 1024;
 
     public function index(Request $request): Response
     {
@@ -125,13 +119,7 @@ class ResourceItemController extends Controller
             return null;
         }
 
-        $file = $request->file($field);
-
-        if ($this->isPdf($file)) {
-            return $this->storeCompressedPdf($file, $field, $directory);
-        }
-
-        return PublicUploads::store($file, $directory);
+        return PublicUploads::store($request->file($field), $directory);
     }
 
     private function replaceFile(Request $request, ResourceItem $resource, string $field, string $directory): ?string
@@ -145,94 +133,6 @@ class ResourceItemController extends Controller
         $this->deleteStoredPath($resource->{$field});
 
         return $path;
-    }
-
-    private function storeCompressedPdf(UploadedFile $file, string $field, string $directory): string
-    {
-        if ($file->getSize() <= self::PDF_TARGET_BYTES) {
-            return PublicUploads::store($file, $directory);
-        }
-
-        $ghostscript = $this->ghostscriptBinary();
-
-        if (! $ghostscript) {
-            throw ValidationException::withMessages([
-                $field => 'PDF compression is not available on this server. Please install Ghostscript or upload a PDF smaller than 2MB.',
-            ]);
-        }
-
-        $temporaryDirectory = storage_path('app/pdf-compression');
-        File::ensureDirectoryExists($temporaryDirectory);
-
-        $outputPath = $temporaryDirectory.'/'.Str::uuid().'.pdf';
-        $settings = ['/ebook', '/screen'];
-        $compressed = false;
-
-        foreach ($settings as $setting) {
-            File::delete($outputPath);
-
-            $process = new Process([
-                $ghostscript,
-                '-sDEVICE=pdfwrite',
-                '-dCompatibilityLevel=1.4',
-                "-dPDFSETTINGS={$setting}",
-                '-dNOPAUSE',
-                '-dQUIET',
-                '-dBATCH',
-                "-sOutputFile={$outputPath}",
-                $file->getRealPath(),
-            ]);
-            $process->setTimeout(90);
-            $process->run();
-
-            if ($process->isSuccessful() && File::exists($outputPath) && File::size($outputPath) <= self::PDF_TARGET_BYTES) {
-                $compressed = true;
-                break;
-            }
-        }
-
-        if (! $compressed) {
-            File::delete($outputPath);
-
-            throw ValidationException::withMessages([
-                $field => 'The PDF could not be compressed below 2MB. Please reduce image quality/pages and upload again.',
-            ]);
-        }
-
-        File::ensureDirectoryExists(PublicUploads::storagePath($directory));
-
-        $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'document';
-        $path = 'storage/'.trim($directory, '/').'/'.$filename.'-'.Str::random(10).'.pdf';
-        File::copy($outputPath, PublicUploads::absolutePath($path));
-        File::delete($outputPath);
-
-        return $path;
-    }
-
-    private function ghostscriptBinary(): ?string
-    {
-        foreach (['/usr/bin/gs', '/usr/local/bin/gs', '/opt/homebrew/bin/gs'] as $candidate) {
-            if (is_executable($candidate)) {
-                return $candidate;
-            }
-        }
-
-        $process = new Process(['which', 'gs']);
-        $process->run();
-
-        if ($process->isSuccessful()) {
-            $binary = trim($process->getOutput());
-
-            return $binary !== '' ? $binary : null;
-        }
-
-        return null;
-    }
-
-    private function isPdf(UploadedFile $file): bool
-    {
-        return strtolower($file->getClientOriginalExtension()) === 'pdf'
-            || $file->getMimeType() === 'application/pdf';
     }
 
     private function deleteStoredPath(?string $path): void
