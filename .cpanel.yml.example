@@ -1,0 +1,13 @@
+---
+# Optional cPanel Git deployment template.
+# Rename this file to .cpanel.yml only after adjusting paths for your account.
+#
+# Most shared hosting setups should keep the Laravel project outside public_html
+# and point the domain document root to:
+# /home/CPANEL_USER/shijuwaza/public
+#
+# If you use cPanel Git Version Control deployment, keep the task simple and run
+# the production deploy script from the repository root.
+deployment:
+  tasks:
+    - /bin/bash scripts/cpanel-deploy.sh

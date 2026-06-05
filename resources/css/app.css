@@ -1,0 +1,298 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.jsx';
+
+@theme {
+    --font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-teal-50: #F3FBFD;
+    --color-teal-100: #E6F6FA;
+    --color-teal-200: #BFE4EF;
+    --color-teal-600: #9DD8EA;
+    --color-teal-700: #7CC8DE;
+    --color-teal-800: #5BAFCB;
+    --color-teal-900: #087D96;
+    --color-teal-950: #245E73;
+
+    --color-amber-200: #dff7e9;
+    --color-amber-400: #9DD8EA;
+    --color-amber-500: #9DD8EA;
+    --color-amber-600: #5BAFCB;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        overflow-x: hidden;
+        background: #ffffff;
+        color: #1e293b;
+    }
+
+    img,
+    video,
+    canvas,
+    svg {
+        max-width: 100%;
+    }
+
+    h1,
+    h2,
+    h3,
+    p,
+    a,
+    button {
+        overflow-wrap: break-word;
+    }
+
+    h1,
+    h2,
+    h3 {
+        text-wrap: balance;
+    }
+
+    ::selection {
+        background: #9DD8EA;
+        color: #245E73;
+    }
+
+    a,
+    button,
+    input,
+    select,
+    textarea {
+        outline-offset: 4px;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 3px solid #9DD8EA;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    .section-shell {
+        width: 100%;
+        max-width: 100%;
+        margin-inline: auto;
+        padding-inline: clamp(0.95rem, 4vw, 4.5rem);
+    }
+
+    .eyebrow {
+        color: #5BAFCB;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .section-title {
+        color: #245E73;
+        font-size: 2.35rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        line-height: 1.08;
+    }
+
+    @media (min-width: 640px) {
+        .section-title {
+            font-size: 3rem;
+        }
+    }
+
+    .section-copy {
+        color: #64748b;
+        font-size: 1.125rem;
+        line-height: 1.75;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        min-height: 3rem;
+        border-radius: 0.9rem;
+        background: #9DD8EA;
+        color: #173B49;
+        font-weight: 800;
+        padding: 0.85rem 1.25rem;
+        box-shadow: 0 14px 28px rgba(42, 212, 236, 0.24);
+        transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn-primary:hover {
+        background: #7CC8DE;
+        box-shadow: 0 18px 34px rgba(42, 212, 236, 0.28);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        min-height: 3rem;
+        border-radius: 0.9rem;
+        border: 1px solid #9DD8EA;
+        background: rgba(255, 255, 255, 0.92);
+        color: #245E73;
+        font-weight: 800;
+        padding: 0.85rem 1.25rem;
+        transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+    }
+
+    .btn-secondary:hover {
+        border-color: #5BAFCB;
+        color: #245E73;
+        background: #F3FBFD;
+        transform: translateY(-1px);
+    }
+
+    .surface-card {
+        border: 1px solid rgba(27, 108, 168, 0.12);
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .surface-card:hover {
+        border-color: rgba(27, 108, 168, 0.22);
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-support {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        min-height: 3rem;
+        border-radius: 0.9rem;
+        background: #9DD8EA;
+        color: #173B49;
+        font-weight: 850;
+        padding: 0.85rem 1.25rem;
+        box-shadow: 0 14px 28px rgba(42, 212, 236, 0.24);
+        transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn-support:hover {
+        background: #7CC8DE;
+        box-shadow: 0 18px 34px rgba(42, 212, 236, 0.28);
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 420px) {
+        .btn-primary,
+        .btn-secondary,
+        .btn-support {
+            width: 100%;
+            padding-inline: 1rem;
+        }
+
+        .eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 0.11em;
+        }
+    }
+
+    .ticker-track {
+        animation: ticker-scroll 34s linear infinite;
+    }
+
+    .partner-slider {
+        animation: partner-scroll var(--partner-scroll-duration, 36s) linear infinite;
+        will-change: transform;
+    }
+
+    .partner-slider:hover,
+    .partner-slider:focus-within {
+        animation-play-state: paused;
+    }
+
+    @media (max-width: 640px) {
+        .admin-shell .admin-header-actions > a,
+        .admin-shell .admin-header-actions > button {
+            min-height: 2.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1 1 auto;
+            padding-inline: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .admin-shell form,
+        .admin-shell section,
+        .admin-shell article,
+        .admin-shell aside {
+            max-width: 100%;
+        }
+
+        .admin-shell form.rounded-xl,
+        .admin-shell form.rounded-2xl,
+        .admin-shell .rounded-2xl.bg-white,
+        .admin-shell .rounded-xl.bg-white {
+            border-radius: 0.85rem;
+        }
+
+        .admin-shell form[class*=" p-6"],
+        .admin-shell section[class*=" p-6"],
+        .admin-shell article[class*=" p-6"],
+        .admin-shell aside[class*=" p-6"] {
+            padding: 1rem !important;
+        }
+
+        .admin-shell h2 {
+            line-height: 1.15;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.85rem 1rem !important;
+            vertical-align: top;
+        }
+    }
+
+    @keyframes ticker-scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @keyframes partner-scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(-33.333%);
+        }
+    }
+}
