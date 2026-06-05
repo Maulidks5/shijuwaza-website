@@ -70,7 +70,7 @@ export default function ResourceForm({ resource, categories = {} }) {
                 <div className="grid gap-5 md:grid-cols-3">
                     <Field label="Document File" error={errors.file_path}>
                         <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" onChange={updateDocumentFile} />
-                        <p className="mt-2 text-sm font-semibold text-slate-500">Accepted: PDF, Word, Excel, PowerPoint, TXT. Maximum upload 20MB. PDFs above 2MB are compressed automatically.</p>
+                        <p className="mt-2 text-sm font-semibold text-slate-500">Accepted: PDF, Word, Excel, PowerPoint, TXT. Maximum upload 20MB.</p>
                         {progress ? (
                             <div className="mt-3 overflow-hidden rounded-full bg-slate-100">
                                 <div className="h-2 rounded-full bg-[#5BAFCB] transition-all" style={{ width: `${progress.percentage || 0}%` }} />
