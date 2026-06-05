@@ -66,7 +66,7 @@ class PublicUploads
     public static function storagePath(string $folder = ''): string
     {
         $folder = trim($folder, '/');
-        $base = rtrim((string) env('PUBLIC_STORAGE_PATH', public_path('storage')), DIRECTORY_SEPARATOR);
+        $base = rtrim((string) env('PUBLIC_STORAGE_PATH', base_path('../public_html/storage')), DIRECTORY_SEPARATOR);
 
         return $folder ? $base.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $folder) : $base;
     }
