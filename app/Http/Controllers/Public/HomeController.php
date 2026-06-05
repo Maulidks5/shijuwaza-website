@@ -14,6 +14,7 @@ use App\Models\Program;
 use App\Models\ResourceItem;
 use App\Models\SiteSetting;
 use App\Models\VisitorLog;
+use App\Support\PublicUploads;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -261,7 +262,7 @@ class HomeController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 
     private function formatMemberUpdate(MemberSubmission $submission): array

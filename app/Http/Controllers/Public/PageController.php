@@ -12,6 +12,7 @@ use App\Models\NewsPost;
 use App\Models\Partner;
 use App\Models\Program;
 use App\Models\ResourceItem;
+use App\Support\PublicUploads;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -278,7 +279,7 @@ class PageController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 
     private function resourcePage(string $category, string $eyebrow, string $title, string $copy): Response

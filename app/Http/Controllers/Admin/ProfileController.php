@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfilePasswordRequest;
 use App\Http\Requests\Admin\ProfileUpdateRequest;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,7 +23,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'avatar' => $user->avatar,
-                'avatar_url' => $user->avatar ? asset("storage/{$user->avatar}") : null,
+                'avatar_url' => PublicUploads::url($user->avatar),
                 'role' => $user->roles->first()?->name,
                 'joined_at' => $user->created_at?->format('F j, Y'),
             ],
@@ -36,11 +36,9 @@ class ProfileController extends Controller
         $data = $request->safe()->except('avatar');
 
         if ($request->hasFile('avatar')) {
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
-            }
+            PublicUploads::delete($user->avatar);
 
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = PublicUploads::store($request->file('avatar'), 'avatars');
         }
 
         $user->update($data);

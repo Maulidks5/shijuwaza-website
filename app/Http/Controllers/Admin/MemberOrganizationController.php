@@ -9,7 +9,6 @@ use App\Models\MemberOrganization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -103,9 +102,7 @@ class MemberOrganizationController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
-        if ($member->logo && ! str_starts_with($member->logo, '/')) {
-            Storage::disk('public')->delete($member->logo);
-        }
+        $this->deletePublicUpload($member->logo);
 
         $member->delete();
 
@@ -181,7 +178,7 @@ class MemberOrganizationController extends Controller
             'acronym' => $member->acronym,
             'description' => $member->description,
             'logo' => $member->logo,
-            'logo_url' => $member->logo ? (str_starts_with($member->logo, '/') ? $member->logo : asset("storage/{$member->logo}")) : null,
+            'logo_url' => $this->publicUploadUrl($member->logo),
             'email' => $member->email,
             'phone' => $member->phone,
             'location' => $member->location,

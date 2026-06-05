@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MemberSubmissionStatusRequest;
 use App\Models\MemberSubmission;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -57,9 +57,7 @@ class MemberSubmissionController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
-        if ($memberSubmission->document_path) {
-            Storage::disk('public')->delete($memberSubmission->document_path);
-        }
+        PublicUploads::delete($memberSubmission->document_path);
 
         $memberSubmission->delete();
 
@@ -96,7 +94,7 @@ class MemberSubmissionController extends Controller
             ...$data,
             'body' => $submission->body,
             'original_filename' => $submission->original_filename,
-            'document_url' => $submission->document_path ? asset("storage/{$submission->document_path}") : null,
+            'document_url' => PublicUploads::url($submission->document_path),
             'approver' => $submission->approver?->name,
         ];
     }

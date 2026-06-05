@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AnnouncementRequest;
 use App\Models\Announcement;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -102,7 +102,7 @@ class AnnouncementController extends Controller
             return null;
         }
 
-        return $request->file('document_path')->store('announcements', 'public');
+        return PublicUploads::store($request->file('document_path'), 'announcements');
     }
 
     private function replaceDocument(Request $request, Announcement $announcement): ?string
@@ -118,9 +118,7 @@ class AnnouncementController extends Controller
 
     private function deleteDocument(?string $path): void
     {
-        if ($path && ! str_starts_with($path, '/')) {
-            Storage::disk('public')->delete($path);
-        }
+        PublicUploads::delete($path);
     }
 
     private function uniqueSlug(string $slug, ?int $ignoreId = null): string
@@ -152,6 +150,6 @@ class AnnouncementController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 }

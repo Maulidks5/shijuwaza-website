@@ -9,6 +9,7 @@ use App\Models\Donation;
 use App\Models\MemberSubmission;
 use App\Models\PartnershipRequest;
 use App\Models\WhistleblowerReport;
+use App\Support\PublicUploads;
 use App\Support\UiTranslations;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -40,7 +41,7 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'phone' => $user->phone,
                     'avatar' => $user->avatar,
-                    'avatar_url' => $user->avatar ? asset("storage/{$user->avatar}") : null,
+                    'avatar_url' => PublicUploads::url($user->avatar),
                     'role' => $user->role,
                     'roles' => $roles->values(),
                     'permissions' => $user->getAllPermissions()->pluck('name'),

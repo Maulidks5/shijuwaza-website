@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HeroSectionRequest;
 use App\Models\HeroSection;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -68,11 +68,9 @@ class HeroSectionController extends Controller
                 $image = $slide['image'] ?? ($currentSlides[$index]['image'] ?? null);
 
                 if ($request->hasFile("slides.{$index}.image_file")) {
-                    if ($image && ! str_starts_with($image, '/')) {
-                        Storage::disk('public')->delete($image);
-                    }
+                    PublicUploads::delete($image);
 
-                    $image = $request->file("slides.{$index}.image_file")->store('hero', 'public');
+                    $image = PublicUploads::store($request->file("slides.{$index}.image_file"), 'hero');
                 }
 
                 return [
@@ -94,7 +92,7 @@ class HeroSectionController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 
     private function defaults(): array

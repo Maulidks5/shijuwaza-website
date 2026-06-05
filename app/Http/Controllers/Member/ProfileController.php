@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\MemberProfileRequest;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,7 +29,7 @@ class ProfileController extends Controller
                 'name' => $member->name,
                 'acronym' => $member->acronym,
                 'description' => $member->description,
-                'logo_url' => $member->logo ? (str_starts_with($member->logo, '/') ? $member->logo : asset("storage/{$member->logo}")) : null,
+                'logo_url' => PublicUploads::url($member->logo),
                 'email' => $member->email,
                 'phone' => $member->phone,
                 'location' => $member->location,
@@ -51,11 +51,9 @@ class ProfileController extends Controller
             $logo = $member->logo;
 
             if ($request->hasFile('logo')) {
-                if ($logo && ! str_starts_with($logo, '/')) {
-                    Storage::disk('public')->delete($logo);
-                }
+                PublicUploads::delete($logo);
 
-                $logo = $request->file('logo')->store('members', 'public');
+                $logo = PublicUploads::store($request->file('logo'), 'members');
             }
 
             $member->update([

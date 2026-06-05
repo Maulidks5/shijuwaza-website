@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LeadershipProfileRequest;
 use App\Models\LeadershipProfile;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -105,17 +104,13 @@ class LeadershipProfileController extends Controller
             ...$profile->toArray(),
             'parent_name' => $profile->parent?->full_name,
             'category_label' => LeadershipProfile::CATEGORIES[$profile->category] ?? $profile->category,
-            'photo_url' => $profile->photo
-                ? (str_starts_with($profile->photo, '/') ? $profile->photo : asset("storage/{$profile->photo}"))
-                : null,
+            'photo_url' => $this->publicUploadUrl($profile->photo),
         ];
     }
 
     private function deleteStoredPhoto(?string $path): void
     {
-        if ($path && ! str_starts_with($path, '/')) {
-            Storage::disk('public')->delete($path);
-        }
+        $this->deletePublicUpload($path);
     }
 
     private function parentOptions(?LeadershipProfile $current = null)

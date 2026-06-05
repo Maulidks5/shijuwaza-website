@@ -58,14 +58,22 @@ DB_PORT=3306
 DB_DATABASE=shijuwaza_db
 DB_USERNAME=root
 DB_PASSWORD=Admin2026@
+PUBLIC_STORAGE_PATH=
 ```
 
 Create the database in MySQL, then run:
 
 ```bash
 php artisan migrate --seed
-php artisan storage:link
 ```
+
+Uploads are stored directly in the public web storage folder. On StackCP/cPanel, set `PUBLIC_STORAGE_PATH` to the real public web root storage path, for example:
+
+```env
+PUBLIC_STORAGE_PATH=/home/sites/42b/6/630bcaecb9/public_html/storage
+```
+
+Do not rely on `php artisan storage:link`; the project does not require a storage symlink for uploads.
 
 ## Development
 

@@ -56,6 +56,7 @@ class ProgramController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
+        $this->deletePublicUpload($program->image);
         $program->delete();
 
         return back()->with('success', 'Program deleted.');

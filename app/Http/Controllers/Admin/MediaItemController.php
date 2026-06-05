@@ -70,6 +70,7 @@ class MediaItemController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
+        $this->deletePublicUpload($medium->image);
         $medium->delete();
 
         return back()->with('success', 'Media item deleted.');

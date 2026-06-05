@@ -77,6 +77,7 @@ class NewsPostController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
+        $this->deletePublicUpload($news->featured_image);
         $news->delete();
 
         return back()->with('success', 'Update deleted.');

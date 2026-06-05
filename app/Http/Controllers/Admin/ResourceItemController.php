@@ -6,11 +6,11 @@ use App\Http\Controllers\Admin\Concerns\HandlesCmsUploads;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ResourceItemRequest;
 use App\Models\ResourceItem;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -131,7 +131,7 @@ class ResourceItemController extends Controller
             return $this->storeCompressedPdf($file, $field, $directory);
         }
 
-        return $file->store($directory, 'public');
+        return PublicUploads::store($file, $directory);
     }
 
     private function replaceFile(Request $request, ResourceItem $resource, string $field, string $directory): ?string
@@ -150,7 +150,7 @@ class ResourceItemController extends Controller
     private function storeCompressedPdf(UploadedFile $file, string $field, string $directory): string
     {
         if ($file->getSize() <= self::PDF_TARGET_BYTES) {
-            return $file->store($directory, 'public');
+            return PublicUploads::store($file, $directory);
         }
 
         $ghostscript = $this->ghostscriptBinary();
@@ -199,11 +199,11 @@ class ResourceItemController extends Controller
             ]);
         }
 
-        Storage::disk('public')->makeDirectory($directory);
+        File::ensureDirectoryExists(PublicUploads::storagePath($directory));
 
         $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'document';
-        $path = $directory.'/'.$filename.'-'.Str::random(10).'.pdf';
-        File::copy($outputPath, Storage::disk('public')->path($path));
+        $path = 'storage/'.trim($directory, '/').'/'.$filename.'-'.Str::random(10).'.pdf';
+        File::copy($outputPath, PublicUploads::absolutePath($path));
         File::delete($outputPath);
 
         return $path;
@@ -237,9 +237,7 @@ class ResourceItemController extends Controller
 
     private function deleteStoredPath(?string $path): void
     {
-        if ($path && ! str_starts_with($path, '/')) {
-            Storage::disk('public')->delete($path);
-        }
+        PublicUploads::delete($path);
     }
 
     private function uniqueSlug(string $slug, ?int $ignoreId = null): string
@@ -273,6 +271,6 @@ class ResourceItemController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 }

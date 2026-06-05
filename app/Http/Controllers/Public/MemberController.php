@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\MemberOrganization;
 use App\Models\MemberSubmission;
+use App\Support\PublicUploads;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -63,7 +64,7 @@ class MemberController extends Controller
             return null;
         }
 
-        return str_starts_with($path, '/') ? $path : asset("storage/{$path}");
+        return PublicUploads::url($path);
     }
 
     private function formatSubmission(MemberSubmission $submission): array

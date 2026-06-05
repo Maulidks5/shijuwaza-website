@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\MemberSubmissionRequest;
 use App\Models\MemberSubmission;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,7 +52,7 @@ class SubmissionController extends Controller
         $originalFilename = null;
 
         if ($request->hasFile('document')) {
-            $documentPath = $request->file('document')->store('member-submissions', 'public');
+            $documentPath = PublicUploads::store($request->file('document'), 'member-submissions');
             $originalFilename = $request->file('document')->getClientOriginalName();
         }
 
@@ -99,7 +99,7 @@ class SubmissionController extends Controller
 
         if ($request->hasFile('document')) {
             $this->deleteDocument($submission);
-            $documentPath = $request->file('document')->store('member-submissions', 'public');
+            $documentPath = PublicUploads::store($request->file('document'), 'member-submissions');
             $originalFilename = $request->file('document')->getClientOriginalName();
         }
 
@@ -140,7 +140,7 @@ class SubmissionController extends Controller
             'admin_note' => $submission->admin_note,
             'is_public' => $submission->is_public,
             'body' => $submission->body,
-            'document_url' => $submission->document_path ? asset("storage/{$submission->document_path}") : null,
+            'document_url' => PublicUploads::url($submission->document_path),
             'original_filename' => $submission->original_filename,
             'created_at' => $submission->created_at?->format('M d, Y'),
             'approved_at' => $submission->approved_at?->format('M d, Y'),
@@ -149,8 +149,6 @@ class SubmissionController extends Controller
 
     private function deleteDocument(MemberSubmission $submission): void
     {
-        if ($submission->document_path) {
-            Storage::disk('public')->delete($submission->document_path);
-        }
+        PublicUploads::delete($submission->document_path);
     }
 }

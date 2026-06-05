@@ -61,6 +61,7 @@ class PartnerController extends Controller
     {
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
+        $this->deletePublicUpload($partner->logo);
         $partner->delete();
 
         return back()->with('success', 'Partner deleted.');
@@ -79,9 +80,7 @@ class PartnerController extends Controller
     {
         return [
             ...$partner->toArray(),
-            'logo_url' => $partner->logo
-                ? (str_starts_with($partner->logo, '/') ? $partner->logo : asset("storage/{$partner->logo}"))
-                : null,
+            'logo_url' => $this->publicUploadUrl($partner->logo),
         ];
     }
 }
