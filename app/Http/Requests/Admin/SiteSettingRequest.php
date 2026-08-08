@@ -16,6 +16,7 @@ class SiteSettingRequest extends FormRequest
         return [
             'settings' => ['required', 'array'],
             'settings.*' => ['nullable', 'string', 'max:2000'],
+            'site_logo' => ['nullable', 'image', 'max:4096'],
         ];
     }
 }

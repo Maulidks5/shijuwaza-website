@@ -34,10 +34,10 @@ const socialLinks = (settings) => [
     { label: 'YouTube', icon: YouTubeIcon, href: settings.youtube_url || '#' },
 ];
 
-function Logo() {
+function Logo({ settings = {} }) {
     return (
         <a href="/" className="flex items-center rounded-md focus-visible:outline">
-            <LogoMark />
+            <LogoMark logoUrl={settings.logo_url} />
         </a>
     );
 }
@@ -82,7 +82,7 @@ export default function Navbar({ settings = {} }) {
             </div>
 
             <nav aria-label="Main navigation" className="section-shell flex min-h-16 items-center justify-between gap-3 py-2.5 sm:gap-5">
-                <Logo />
+                <Logo settings={settings} />
 
                 <div className="hidden items-center gap-1 rounded-full border border-[#5BAFCB]/10 bg-[#F8FAFC]/80 p-1 shadow-inner lg:flex">
                     {navLinks.slice(0, 3).map(([labelKey, href]) => {

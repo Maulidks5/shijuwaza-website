@@ -21,17 +21,42 @@ const labels = {
     facebook_url: 'Facebook URL',
 };
 
-export default function SettingsIndex({ settings = {} }) {
-    const { data, setData, patch, processing, errors } = useForm({ settings });
+export default function SettingsIndex({ settings = {}, siteLogoUrl = null }) {
+    const { data, setData, post, processing, errors } = useForm({
+        settings,
+        site_logo: null,
+        _method: 'patch',
+    });
 
     const submit = (event) => {
         event.preventDefault();
-        patch('/admin/settings');
+        post('/admin/settings', {
+            forceFormData: true,
+            onSuccess: () => setData('site_logo', null),
+        });
     };
 
     return (
         <AdminLayout title="Settings">
             <form onSubmit={submit} className="grid max-w-4xl gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <section className="rounded-xl border border-[#9DD8EA]/35 bg-[#F8FAFC] p-5">
+                    <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5BAFCB]">Branding</p>
+                    <h2 className="mt-2 text-2xl font-black text-[#245E73]">Organization logo</h2>
+                    <div className="mt-5 grid gap-5 md:grid-cols-[0.4fr_0.6fr] md:items-center">
+                        <div className="rounded-xl border border-slate-200 bg-white p-4">
+                            {siteLogoUrl ? (
+                                <img src={siteLogoUrl} alt="Current organization logo" className="h-24 w-full object-contain" />
+                            ) : (
+                                <p className="text-sm font-semibold text-slate-500">No logo uploaded yet.</p>
+                            )}
+                        </div>
+                        <Field label="Upload New Logo" error={errors.site_logo}>
+                            <input type="file" accept="image/*" onChange={(event) => setData('site_logo', event.target.files[0] || null)} />
+                            <p className="text-sm font-semibold text-slate-500">PNG, JPG, JPEG, or WEBP. Maximum 4MB.</p>
+                        </Field>
+                    </div>
+                </section>
+
                 <div className="grid gap-5 md:grid-cols-2">
                     {Object.entries(labels).map(([key, label]) => (
                         <Field key={key} label={label} error={errors[`settings.${key}`]}>

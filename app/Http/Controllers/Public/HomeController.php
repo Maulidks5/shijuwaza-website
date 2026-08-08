@@ -244,6 +244,7 @@ class HomeController extends Controller
         return [
             'email' => $settings['site_email'] ?? 'info@shijuwaza.or.tz',
             'phone' => $settings['site_phone'] ?? '+255 000 000 000',
+            'logo_url' => $this->imageUrl($settings['site_logo'] ?? null) ?: asset('images/shijuwaza-logo-cropped.png'),
             'location' => $settings['site_location'] ?? 'Zanzibar, Tanzania',
             'organization_email' => $settings['organization_email'] ?? $settings['site_email'] ?? 'info@shijuwaza.or.tz',
             'organization_phone' => $settings['organization_phone'] ?? $settings['site_phone'] ?? '+255 000 000 000',

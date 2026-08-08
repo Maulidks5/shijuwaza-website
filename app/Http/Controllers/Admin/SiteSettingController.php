@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SiteSettingRequest;
 use App\Models\SiteSetting;
+use App\Support\PublicUploads;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,13 +34,14 @@ class SiteSettingController extends Controller
 
     public function index(): Response
     {
-        $settings = SiteSetting::whereIn('key', array_keys($this->editableKeys))
+        $settings = SiteSetting::whereIn('key', [...array_keys($this->editableKeys), 'site_logo'])
             ->pluck('value', 'key');
 
         return Inertia::render('Admin/Settings/Index', [
             'settings' => collect($this->editableKeys)
                 ->mapWithKeys(fn ($group, $key) => [$key => $settings[$key] ?? ''])
                 ->all(),
+            'siteLogoUrl' => PublicUploads::url($settings['site_logo'] ?? null) ?: asset('images/shijuwaza-logo-cropped.png'),
         ]);
     }
 
@@ -49,6 +51,16 @@ class SiteSettingController extends Controller
             SiteSetting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $request->input("settings.{$key}"), 'group' => $group],
+            );
+        }
+
+        if ($request->hasFile('site_logo')) {
+            $currentLogo = SiteSetting::where('key', 'site_logo')->value('value');
+            PublicUploads::delete($currentLogo);
+
+            SiteSetting::updateOrCreate(
+                ['key' => 'site_logo'],
+                ['value' => PublicUploads::store($request->file('site_logo'), 'settings'), 'group' => 'branding'],
             );
         }
 

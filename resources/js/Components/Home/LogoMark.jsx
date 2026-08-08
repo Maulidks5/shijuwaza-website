@@ -1,4 +1,4 @@
-export default function LogoMark({ variant = 'light' }) {
+export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwaza-logo-cropped.png' }) {
     const textColor = variant === 'dark' ? 'text-white' : 'text-[#245E73]';
     const subTextColor = variant === 'dark' ? 'text-blue-100' : 'text-[#5BAFCB]';
     const imageTone = variant === 'dark' ? 'invert brightness-0' : '';
@@ -7,7 +7,7 @@ export default function LogoMark({ variant = 'light' }) {
         <span className="flex items-center gap-3">
             <span className="grid h-12 w-24 shrink-0 place-items-center sm:h-14 sm:w-30 lg:h-16 lg:w-36">
                 <img
-                    src="/images/shijuwaza-logo-cropped.png"
+                    src={logoUrl}
                     alt="SHIJUWAZA logo"
                     className={`h-full w-full object-contain ${imageTone}`}
                 />

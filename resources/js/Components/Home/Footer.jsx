@@ -29,7 +29,7 @@ export default function Footer({ settings = {} }) {
         <footer className="border-t border-[#9DD8EA]/60 bg-[#9DD8EA] text-[#173B49]">
             <div className="section-shell grid gap-9 py-10 sm:py-12 lg:grid-cols-[1.15fr_0.75fr_1fr] lg:py-14">
                 <div>
-                    <LogoMark />
+                    <LogoMark logoUrl={settings.logo_url} />
                     <p className="mt-5 max-w-md leading-8 text-[#245E73]">
                         {t('footer.mission')}
                     </p>
