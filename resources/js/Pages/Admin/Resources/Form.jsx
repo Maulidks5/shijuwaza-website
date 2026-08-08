@@ -18,7 +18,7 @@ export default function ResourceForm({ resource, categories = {} }) {
         cover_image: null,
         file_path: null,
         published_at: dateValue,
-        status: resource?.status || 'draft',
+        status: resource?.status || 'published',
         sort_order: resource?.sort_order || 0,
         is_featured: Boolean(resource?.is_featured),
         _method: editing ? 'put' : 'post',

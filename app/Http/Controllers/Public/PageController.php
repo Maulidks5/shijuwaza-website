@@ -222,7 +222,7 @@ class PageController extends Controller
 
     public function resourceShow(ResourceItem $resourceItem): Response
     {
-        abort_unless($resourceItem->status === 'published' && $resourceItem->published_at && $resourceItem->published_at->isPast(), 404);
+        abort_unless(ResourceItem::published()->whereKey($resourceItem->id)->exists(), 404);
 
         return Inertia::render('Public/ResourceShow', [
             'resource' => $this->formatResource($resourceItem),

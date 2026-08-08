@@ -104,6 +104,10 @@ class ResourceItemController extends Controller
             abort(403);
         }
 
+        if (($data['status'] ?? null) === 'published' && blank($data['published_at'] ?? null)) {
+            $data['published_at'] = now();
+        }
+
         return [
             ...$data,
             'slug' => $this->uniqueSlug($slug, $resource?->id),
