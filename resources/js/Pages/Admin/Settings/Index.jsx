@@ -25,7 +25,6 @@ export default function SettingsIndex({ settings = {}, siteLogoUrl = null }) {
     const { data, setData, post, processing, errors } = useForm({
         settings,
         site_logo: null,
-        _method: 'patch',
     });
 
     const submit = (event) => {

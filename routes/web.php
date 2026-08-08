@@ -106,6 +106,7 @@ Route::middleware(['auth', 'account_active', 'secure_session', 'admin', 'no_back
 
     Route::middleware(['role:Super Admin', 'permission:manage settings'])->group(function (): void {
         Route::get('/settings', [SiteSettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [SiteSettingController::class, 'update'])->name('settings.store');
         Route::patch('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
     });
 
