@@ -75,7 +75,7 @@ export default function AdminLayout({ title, actions, children }) {
                         const badgeCount = adminNotifications.badges?.[href] || 0;
 
                         return (
-                            <Link
+                            <a
                                 key={href}
                                 href={href}
                                 className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold transition ${
@@ -85,7 +85,7 @@ export default function AdminLayout({ title, actions, children }) {
                                 <Icon aria-hidden="true" size={18} />
                                 <span className="min-w-0 flex-1">{label}</span>
                                 {badgeCount ? <Badge count={badgeCount} /> : null}
-                            </Link>
+                            </a>
                         );
                     })}
                 </nav>
@@ -124,10 +124,10 @@ export default function AdminLayout({ title, actions, children }) {
                                         </div>
                                         <div className="max-h-96 overflow-y-auto p-2">
                                             {adminNotifications.items?.length ? adminNotifications.items.map((item) => (
-                                                <Link key={item.key} href={item.href} className="flex items-center justify-between gap-3 rounded-lg px-3 py-3 font-bold text-slate-700 hover:bg-[#F3FBFD]" role="menuitem">
+                                                <a key={item.key} href={item.href} className="flex items-center justify-between gap-3 rounded-lg px-3 py-3 font-bold text-slate-700 hover:bg-[#F3FBFD]" role="menuitem">
                                                     <span>{item.label}</span>
                                                     <Badge count={item.count} />
-                                                </Link>
+                                                </a>
                                             )) : (
                                                 <p className="rounded-lg px-3 py-5 text-center text-sm font-bold text-slate-500">No urgent requests right now.</p>
                                             )}
@@ -161,10 +161,10 @@ export default function AdminLayout({ title, actions, children }) {
                                             <p className="font-black text-slate-900">{auth.user?.name}</p>
                                             <p className="mt-1 text-sm text-slate-500">{auth.user?.email}</p>
                                         </div>
-                                        <Link href="/admin/profile" className="flex items-center gap-2 px-4 py-3 font-bold text-slate-700 hover:bg-slate-50" role="menuitem">
+                                        <a href="/admin/profile" className="flex items-center gap-2 px-4 py-3 font-bold text-slate-700 hover:bg-slate-50" role="menuitem">
                                             <User aria-hidden="true" size={17} />
                                             Profile
-                                        </Link>
+                                        </a>
                                         <Link href="/logout" method="post" as="button" className="flex w-full items-center gap-2 px-4 py-3 text-left font-bold text-red-700 hover:bg-red-50" role="menuitem">
                                             <LogOut aria-hidden="true" size={17} />
                                             Logout
@@ -176,10 +176,10 @@ export default function AdminLayout({ title, actions, children }) {
                     </div>
                     <div className="flex gap-2 overflow-x-auto border-t border-slate-100 px-4 py-3 lg:hidden">
                         {visibleNavItems.map(({ label, href }) => (
-                            <Link key={href} href={href} className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-bold shadow-sm ${url.startsWith(href) ? 'bg-[#9DD8EA] text-[#173B49]' : 'bg-white text-slate-700'}`}>
+                            <a key={href} href={href} className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-bold shadow-sm ${url.startsWith(href) ? 'bg-[#9DD8EA] text-[#173B49]' : 'bg-white text-slate-700'}`}>
                                 {label}
                                 {adminNotifications.badges?.[href] ? <Badge count={adminNotifications.badges[href]} /> : null}
-                            </Link>
+                            </a>
                         ))}
                     </div>
                 </header>

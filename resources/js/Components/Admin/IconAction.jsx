@@ -1,5 +1,3 @@
-import { Link } from '@inertiajs/react';
-
 const styles = {
     neutral: 'bg-slate-100 text-slate-700 hover:bg-slate-200',
     teal: 'bg-[#F3FBFD] text-[#245E73] hover:bg-[#E6F6FA]',
@@ -19,9 +17,9 @@ export default function IconAction({ href, onClick, icon: Icon, label, tone = 'n
 
     if (href) {
         return (
-            <Link href={href} className={className} title={label} aria-label={label}>
+            <a href={href} className={className} title={label} aria-label={label}>
                 {content}
-            </Link>
+            </a>
         );
     }
 
