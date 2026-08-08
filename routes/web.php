@@ -29,6 +29,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MemberController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PartnershipRequestController;
+use App\Http\Controllers\Public\UploadedFileController;
 use App\Http\Controllers\Public\WhistleblowerReportController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Member\ProfileController as MemberProfileController;
@@ -36,6 +37,7 @@ use App\Http\Controllers\Member\SubmissionController as MemberSubmissionControll
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/uploaded-files/{path}', [UploadedFileController::class, 'show'])->where('path', '.*')->name('uploaded-files.show');
 Route::get('/language/{locale}', LocaleController::class)->name('language.switch');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/programs', [PageController::class, 'programs'])->name('programs');

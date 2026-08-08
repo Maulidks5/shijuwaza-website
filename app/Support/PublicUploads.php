@@ -49,7 +49,10 @@ class PublicUploads
             return $path;
         }
 
-        return str_starts_with($path, 'storage/') ? "/{$path}" : "/storage/{$path}";
+        $path = ltrim($path, '/');
+        $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
+
+        return "/uploaded-files/{$encodedPath}";
     }
 
     public static function absolutePath(string $path): string
@@ -66,7 +69,14 @@ class PublicUploads
     public static function storagePath(string $folder = ''): string
     {
         $folder = trim($folder, '/');
-        $base = rtrim((string) env('PUBLIC_STORAGE_PATH', base_path('../public_html/storage')), DIRECTORY_SEPARATOR);
+        $base = env('PUBLIC_STORAGE_PATH');
+
+        if (! $base) {
+            $publicHtmlStorage = base_path('../public_html/storage');
+            $base = is_dir(dirname($publicHtmlStorage)) ? $publicHtmlStorage : storage_path('app/public');
+        }
+
+        $base = rtrim((string) $base, DIRECTORY_SEPARATOR);
 
         return $folder ? $base.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $folder) : $base;
     }
