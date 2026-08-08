@@ -3,14 +3,17 @@ export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwa
     const subTextColor = variant === 'dark' ? 'text-blue-100' : 'text-[#5BAFCB]';
     const hasCustomLogo = logoUrl && !logoUrl.includes('shijuwaza-logo-cropped.png');
     const imageTone = variant === 'dark' && !hasCustomLogo ? 'invert brightness-0' : '';
+    const logoBox = hasCustomLogo
+        ? 'h-16 w-40 sm:h-[72px] sm:w-52 lg:h-20 lg:w-60'
+        : 'h-14 w-28 sm:h-16 sm:w-36 lg:h-[72px] lg:w-44';
 
     return (
         <span className="flex min-w-0 items-center gap-3">
-            <span className="grid h-14 w-28 shrink-0 place-items-center overflow-hidden sm:h-16 sm:w-36 lg:h-[72px] lg:w-44">
+            <span className={`grid shrink-0 place-items-center ${logoBox}`}>
                 <img
                     src={logoUrl}
                     alt="SHIJUWAZA logo"
-                    className={`max-h-full max-w-full object-contain ${hasCustomLogo ? 'mix-blend-multiply' : imageTone}`}
+                    className={`block h-full w-full object-contain object-left ${hasCustomLogo ? 'mix-blend-multiply' : imageTone}`}
                 />
             </span>
             <span className={`${hasCustomLogo ? 'hidden xl:block' : 'hidden sm:block'}`}>
