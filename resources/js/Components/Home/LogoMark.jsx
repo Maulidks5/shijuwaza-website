@@ -1,4 +1,4 @@
-export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwaza-logo-cropped.png' }) {
+export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwaza-logo-horizontal.png' }) {
     const textColor = variant === 'dark' ? 'text-white' : 'text-[#245E73]';
     const subTextColor = variant === 'dark' ? 'text-blue-100' : 'text-[#5BAFCB]';
     const hasCustomLogo = logoUrl && !logoUrl.includes('shijuwaza-logo-cropped.png');

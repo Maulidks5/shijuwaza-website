@@ -146,7 +146,7 @@ class HandleInertiaRequests extends Middleware
             'email' => 'info@shijuwaza.or.tz',
             'phone' => '+255 000 000 000',
             'whatsapp_number' => '+255 716 110 270',
-            'logo_url' => asset('images/shijuwaza-logo-cropped.png'),
+            'logo_url' => asset('images/shijuwaza-logo-horizontal.png'),
             'location' => 'Zanzibar, Tanzania',
             'office_hours' => 'Monday to Friday, 9:00 AM - 5:00 PM',
             'facebook_url' => 'https://web.facebook.com/profile.php?id=100090167520147',

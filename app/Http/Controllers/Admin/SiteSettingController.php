@@ -41,7 +41,7 @@ class SiteSettingController extends Controller
             'settings' => collect($this->editableKeys)
                 ->mapWithKeys(fn ($group, $key) => [$key => $settings[$key] ?? ''])
                 ->all(),
-            'siteLogoUrl' => PublicUploads::url($settings['site_logo'] ?? null) ?: asset('images/shijuwaza-logo-cropped.png'),
+            'siteLogoUrl' => PublicUploads::url($settings['site_logo'] ?? null) ?: asset('images/shijuwaza-logo-horizontal.png'),
         ]);
     }
 
