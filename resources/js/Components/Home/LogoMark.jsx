@@ -4,7 +4,7 @@ export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwa
     const hasCustomLogo = logoUrl && !logoUrl.includes('shijuwaza-logo-cropped.png');
     const imageTone = variant === 'dark' && !hasCustomLogo ? 'invert brightness-0' : '';
     const logoBox = hasCustomLogo
-        ? 'h-16 w-40 sm:h-[72px] sm:w-52 lg:h-20 lg:w-60'
+        ? 'h-16 w-56 sm:h-[72px] sm:w-72 lg:h-20 lg:w-80'
         : 'h-14 w-28 sm:h-16 sm:w-36 lg:h-[72px] lg:w-44';
 
     return (
@@ -16,12 +16,14 @@ export default function LogoMark({ variant = 'light', logoUrl = '/images/shijuwa
                     className={`block h-full w-full object-contain object-left ${hasCustomLogo ? 'mix-blend-multiply' : imageTone}`}
                 />
             </span>
-            <span className={`${hasCustomLogo ? 'hidden xl:block' : 'hidden sm:block'}`}>
-                <span className={`block text-xl font-black leading-none tracking-wide ${textColor}`}>SHIJUWAZA</span>
-                <span className={`mt-1 block text-xs font-semibold uppercase tracking-[0.14em] ${subTextColor}`}>
-                    Zanzibar OPD Federation
+            {!hasCustomLogo ? (
+                <span className="hidden sm:block">
+                    <span className={`block text-xl font-black leading-none tracking-wide ${textColor}`}>SHIJUWAZA</span>
+                    <span className={`mt-1 block text-xs font-semibold uppercase tracking-[0.14em] ${subTextColor}`}>
+                        Zanzibar OPD Federation
+                    </span>
                 </span>
-            </span>
+            ) : null}
         </span>
     );
 }
