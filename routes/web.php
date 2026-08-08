@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\WhistleblowerReportController as AdminWhistleblow
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Public\ContactMessageController;
+use App\Http\Controllers\Public\BuildAssetController;
 use App\Http\Controllers\Public\DonationController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MemberController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\Member\SubmissionController as MemberSubmissionControll
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/build/{path}', [BuildAssetController::class, 'show'])->where('path', '.*')->name('build-assets.show');
 Route::get('/uploaded-files/{path}', [UploadedFileController::class, 'show'])->where('path', '.*')->name('uploaded-files.show');
 Route::get('/language/{locale}', LocaleController::class)->name('language.switch');
 Route::get('/about', [PageController::class, 'about'])->name('about');
