@@ -43,10 +43,7 @@ class ResourceItem extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', 'published')
-            ->where(fn (Builder $query) => $query
-                ->whereNull('published_at')
-                ->orWhere('published_at', '<=', now()));
+        return $query->where('status', 'published');
     }
 
     public function scopeCategory(Builder $query, string $category): Builder
