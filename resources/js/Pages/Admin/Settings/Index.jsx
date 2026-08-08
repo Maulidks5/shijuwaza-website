@@ -43,9 +43,9 @@ export default function SettingsIndex({ settings = {}, siteLogoUrl = null }) {
                     <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5BAFCB]">Branding</p>
                     <h2 className="mt-2 text-2xl font-black text-[#245E73]">Organization logo</h2>
                     <div className="mt-5 grid gap-5 md:grid-cols-[0.4fr_0.6fr] md:items-center">
-                        <div className="rounded-xl border border-slate-200 bg-white p-4">
+                        <div className="grid min-h-36 place-items-center rounded-xl border border-dashed border-[#5BAFCB]/35 bg-white/40 p-4">
                             {siteLogoUrl ? (
-                                <img src={siteLogoUrl} alt="Current organization logo" className="h-24 w-full object-contain" />
+                                <img src={siteLogoUrl} alt="Current organization logo" className="max-h-32 max-w-full object-contain mix-blend-multiply" />
                             ) : (
                                 <p className="text-sm font-semibold text-slate-500">No logo uploaded yet.</p>
                             )}
