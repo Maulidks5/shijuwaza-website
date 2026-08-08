@@ -16,8 +16,15 @@ class BuildAssetController extends Controller
 
         abort_unless(is_file($filePath), 404);
 
+        $contentType = match (pathinfo($filePath, PATHINFO_EXTENSION)) {
+            'css' => 'text/css; charset=utf-8',
+            'js' => 'application/javascript; charset=utf-8',
+            'json' => 'application/json; charset=utf-8',
+            default => mime_content_type($filePath) ?: 'application/octet-stream',
+        };
+
         return response()
-            ->file($filePath)
+            ->file($filePath, ['Content-Type' => $contentType])
             ->setMaxAge(31536000)
             ->setPublic();
     }
