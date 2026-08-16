@@ -20,6 +20,12 @@ class NewsPost extends Model
         'success_story' => 'Success Story',
     ];
 
+    public const RELATED_LINK_TYPES = [
+        'photo_gallery' => 'Photo Gallery',
+        'youtube' => 'YouTube Video',
+        'external' => 'External Link',
+    ];
+
     protected $fillable = [
         'title',
         'slug',
@@ -31,6 +37,9 @@ class NewsPost extends Model
         'published_at',
         'status',
         'sort_order',
+        'related_link_type',
+        'related_link_url',
+        'related_link_label',
     ];
 
     protected function casts(): array

@@ -350,7 +350,19 @@ class PageController extends Controller
             'category_label' => NewsPost::CATEGORIES[$post->category] ?? $post->category,
             'date_label' => $post->activity_date?->format('F j, Y') ?: $post->published_at?->format('F j, Y'),
             'published_label' => $post->published_at?->format('F j, Y'),
+            'related_link_type_label' => NewsPost::RELATED_LINK_TYPES[$post->related_link_type] ?? null,
+            'related_link_label' => $post->related_link_label ?: $this->defaultRelatedLinkLabel($post->related_link_type),
         ];
+    }
+
+    private function defaultRelatedLinkLabel(?string $type): ?string
+    {
+        return match ($type) {
+            'photo_gallery' => 'View Photo Gallery',
+            'youtube' => 'Watch Video',
+            'external' => 'Open Link',
+            default => null,
+        };
     }
 
     private function galleryAlbums()

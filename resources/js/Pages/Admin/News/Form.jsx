@@ -2,7 +2,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import { Field, inputClass } from '../../../Components/Admin/FormControls';
 
-export default function NewsForm({ post, categories = {} }) {
+export default function NewsForm({ post, categories = {}, relatedLinkTypes = {} }) {
     const editing = Boolean(post);
     const permissions = usePage().props.auth.user?.permissions || [];
     const canManageVisibility = permissions.includes('manage visibility');
@@ -18,6 +18,9 @@ export default function NewsForm({ post, categories = {} }) {
         published_at: dateValue,
         status: post?.status || 'draft',
         sort_order: post?.sort_order || 0,
+        related_link_type: post?.related_link_type || '',
+        related_link_url: post?.related_link_url || '',
+        related_link_label: post?.related_link_label || '',
         _method: editing ? 'put' : 'post',
     });
 
@@ -45,6 +48,26 @@ export default function NewsForm({ post, categories = {} }) {
                     <Field label="Published At" error={errors.published_at}><input type="datetime-local" className={inputClass} value={data.published_at} onChange={(event) => setData('published_at', event.target.value)} /></Field>
                     <Field label="Featured Image" error={errors.featured_image}><input type="file" accept="image/*" onChange={(event) => setData('featured_image', event.target.files[0])} /></Field>
                 </div>
+                <section className="grid gap-5 rounded-xl border border-[#9DD8EA]/35 bg-[#F8FAFC] p-5">
+                    <div>
+                        <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5BAFCB]">Related Link</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-500">Optional link to a photo gallery, YouTube video, or external page.</p>
+                    </div>
+                    <div className="grid gap-5 md:grid-cols-3">
+                        <Field label="Link Type" error={errors.related_link_type}>
+                            <select className={inputClass} value={data.related_link_type} onChange={(event) => setData('related_link_type', event.target.value)}>
+                                <option value="">No related link</option>
+                                {Object.entries(relatedLinkTypes).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                            </select>
+                        </Field>
+                        <Field label="Link URL" error={errors.related_link_url}>
+                            <input className={inputClass} value={data.related_link_url} onChange={(event) => setData('related_link_url', event.target.value)} placeholder="https://..." />
+                        </Field>
+                        <Field label="Button Label" error={errors.related_link_label}>
+                            <input className={inputClass} value={data.related_link_label} onChange={(event) => setData('related_link_label', event.target.value)} placeholder="Watch Video" />
+                        </Field>
+                    </div>
+                </section>
                 <button disabled={processing} className="rounded-lg bg-[#9DD8EA] px-5 py-3 font-black text-[#173B49] disabled:opacity-60">Save Update</button>
             </form>
         </AdminLayout>

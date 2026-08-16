@@ -42,6 +42,7 @@ class NewsPostController extends Controller
         return Inertia::render('Admin/News/Form', [
             'post' => null,
             'categories' => NewsPost::CATEGORIES,
+            'relatedLinkTypes' => NewsPost::RELATED_LINK_TYPES,
         ]);
     }
 
@@ -60,6 +61,7 @@ class NewsPostController extends Controller
         return Inertia::render('Admin/News/Form', [
             'post' => $this->formatPost($news),
             'categories' => NewsPost::CATEGORIES,
+            'relatedLinkTypes' => NewsPost::RELATED_LINK_TYPES,
         ]);
     }
 
@@ -99,6 +101,14 @@ class NewsPostController extends Controller
 
         if (($data['status'] ?? null) === 'archived' && ! $request->user()?->can('manage visibility')) {
             abort(403);
+        }
+
+        if (blank($data['related_link_url'] ?? null)) {
+            $data['related_link_type'] = null;
+            $data['related_link_url'] = null;
+            $data['related_link_label'] = null;
+        } elseif (blank($data['related_link_type'] ?? null)) {
+            $data['related_link_type'] = 'external';
         }
 
         return [

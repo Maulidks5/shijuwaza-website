@@ -1,6 +1,7 @@
 import SeoHead from '../../Components/Public/SeoHead';
 import PublicLayout from '../../Layouts/PublicLayout';
 import PublicCta from '../../Components/Public/PublicCta';
+import { CirclePlay, ExternalLink, Images } from 'lucide-react';
 
 export default function NewsShow({ post, relatedPosts = [] }) {
     return (
@@ -20,6 +21,7 @@ export default function NewsShow({ post, relatedPosts = [] }) {
                     </div>
                     {post.image_url ? <img src={post.image_url} alt={post.title} className="mt-8 max-h-[520px] w-full rounded-2xl object-cover" /> : null}
                     <div className="section-copy mt-8 whitespace-pre-line">{post.body || post.excerpt}</div>
+                    <RelatedLinkButton post={post} />
                 </div>
             </article>
             {relatedPosts.length ? (
@@ -43,5 +45,29 @@ export default function NewsShow({ post, relatedPosts = [] }) {
             ) : null}
             <PublicCta />
         </PublicLayout>
+    );
+}
+
+function RelatedLinkButton({ post }) {
+    if (!post.related_link_url) {
+        return null;
+    }
+
+    const Icon = {
+        photo_gallery: Images,
+        youtube: CirclePlay,
+        external: ExternalLink,
+    }[post.related_link_type] || ExternalLink;
+
+    return (
+        <a
+            href={post.related_link_url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#5BAFCB] px-5 py-3 font-black text-white shadow-sm transition hover:bg-[#0786A4]"
+        >
+            {post.related_link_label || 'Open Link'}
+            <Icon aria-hidden="true" size={18} />
+        </a>
     );
 }

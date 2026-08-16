@@ -2,6 +2,7 @@ import { Link, router, useForm } from '@inertiajs/react';
 import SeoHead from '../../Components/Public/SeoHead';
 import PublicLayout from '../../Layouts/PublicLayout';
 import PageHero from '../../Components/Public/PageHero';
+import { CirclePlay, ExternalLink, Images } from 'lucide-react';
 
 export default function News({ posts = { data: [], links: [] }, featuredPost = null, categories = {}, filters = {} }) {
     const items = posts.data || posts;
@@ -45,7 +46,10 @@ export default function News({ posts = { data: [], links: [] }, featuredPost = n
                                 <p className="eyebrow">{featuredPost.category_label || 'Featured'}</p>
                                 <h2 className="mt-3 text-2xl font-black leading-tight text-[#245E73] sm:text-3xl">{featuredPost.title}</h2>
                                 <p className="mt-4 leading-8 text-slate-600">{featuredPost.excerpt}</p>
-                                <Link href={`/news/${featuredPost.slug}`} className="btn-primary mt-6">Read Update</Link>
+                                <div className="mt-6 flex flex-wrap gap-3">
+                                    <Link href={`/news/${featuredPost.slug}`} className="btn-primary">Read Update</Link>
+                                    <RelatedLinkButton post={featuredPost} />
+                                </div>
                             </div>
                         </article>
                     ) : null}
@@ -61,9 +65,10 @@ export default function News({ posts = { data: [], links: [] }, featuredPost = n
                                     </div>
                                     <h2 className="mt-3 text-xl font-black text-[#245E73] sm:text-2xl">{post.title}</h2>
                                     <p className="mt-4 leading-7 text-slate-600">{post.excerpt}</p>
-                                    <Link href={`/news/${post.slug}`} className="mt-5 inline-flex font-black text-[#5BAFCB]">
-                                        Read update
-                                    </Link>
+                                    <div className="mt-5 flex flex-wrap gap-3">
+                                        <Link href={`/news/${post.slug}`} className="inline-flex font-black text-[#5BAFCB]">Read update</Link>
+                                        <RelatedLinkButton post={post} compact />
+                                    </div>
                                 </div>
                             </article>
                         ))}
@@ -90,5 +95,29 @@ export default function News({ posts = { data: [], links: [] }, featuredPost = n
                 </div>
             </section>
         </PublicLayout>
+    );
+}
+
+function RelatedLinkButton({ post, compact = false }) {
+    if (!post.related_link_url) {
+        return null;
+    }
+
+    const Icon = {
+        photo_gallery: Images,
+        youtube: CirclePlay,
+        external: ExternalLink,
+    }[post.related_link_type] || ExternalLink;
+
+    return (
+        <a
+            href={post.related_link_url}
+            target="_blank"
+            rel="noreferrer"
+            className={`inline-flex items-center gap-2 font-black text-[#0786A4] ${compact ? '' : 'rounded-full border border-[#5BAFCB]/15 px-4 py-2 hover:bg-[#F3FBFD]'}`}
+        >
+            {post.related_link_label || 'Open Link'}
+            <Icon aria-hidden="true" size={16} />
+        </a>
     );
 }
