@@ -8,6 +8,8 @@ use App\Http\Requests\Admin\NewsPostRequest;
 use App\Models\NewsPost;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -48,6 +50,8 @@ class NewsPostController extends Controller
 
     public function store(NewsPostRequest $request): RedirectResponse
     {
+        $this->ensureRelatedLinkColumns();
+
         $data = $this->payload($request);
         $data['featured_image'] = $this->storeImage($request, 'featured_image', 'news');
 
@@ -67,6 +71,8 @@ class NewsPostController extends Controller
 
     public function update(NewsPostRequest $request, NewsPost $news): RedirectResponse
     {
+        $this->ensureRelatedLinkColumns();
+
         $data = $this->payload($request, $news);
         $data['featured_image'] = $this->replaceImage($request, $news, 'featured_image', 'news');
 
@@ -116,6 +122,31 @@ class NewsPostController extends Controller
             'slug' => $this->uniqueSlug($slug, $post?->id),
             'sort_order' => $request->integer('sort_order'),
         ];
+    }
+
+    private function ensureRelatedLinkColumns(): void
+    {
+        if (! Schema::hasTable('news_posts')) {
+            return;
+        }
+
+        if (! Schema::hasColumn('news_posts', 'related_link_type')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_type')->nullable()->after('sort_order');
+            });
+        }
+
+        if (! Schema::hasColumn('news_posts', 'related_link_url')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_url', 2048)->nullable()->after('related_link_type');
+            });
+        }
+
+        if (! Schema::hasColumn('news_posts', 'related_link_label')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_label')->nullable()->after('related_link_url');
+            });
+        }
     }
 
     private function uniqueSlug(string $slug, ?int $ignoreId = null): string

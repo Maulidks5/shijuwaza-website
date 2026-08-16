@@ -8,11 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('news_posts', function (Blueprint $table): void {
-            $table->string('related_link_type')->nullable()->after('sort_order');
-            $table->string('related_link_url', 2048)->nullable()->after('related_link_type');
-            $table->string('related_link_label')->nullable()->after('related_link_url');
-        });
+        if (! Schema::hasColumn('news_posts', 'related_link_type')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_type')->nullable()->after('sort_order');
+            });
+        }
+
+        if (! Schema::hasColumn('news_posts', 'related_link_url')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_url', 2048)->nullable()->after('related_link_type');
+            });
+        }
+
+        if (! Schema::hasColumn('news_posts', 'related_link_label')) {
+            Schema::table('news_posts', function (Blueprint $table): void {
+                $table->string('related_link_label')->nullable()->after('related_link_url');
+            });
+        }
     }
 
     public function down(): void
