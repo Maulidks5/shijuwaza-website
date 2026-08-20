@@ -139,7 +139,6 @@ export default function Gallery({ featured = null, images = { data: [], links: [
                                                 <div className="p-5">
                                                     <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5BAFCB]">{item.date_label || group.label}</p>
                                                     <h4 className="mt-2 text-lg font-black leading-snug text-[#245E73]">{item.title}</h4>
-                                                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{item.caption}</p>
                                                 </div>
                                             </button>
                                         ))}
@@ -194,9 +193,9 @@ export default function Gallery({ featured = null, images = { data: [], links: [
                             ) : null}
                         </div>
                         <div className="mt-4 rounded-2xl bg-white/10 p-4 text-blue-50">
-                            <p className="leading-7">{selected.caption}</p>
+                            {selected.date_label ? <p className="text-sm font-black uppercase tracking-[0.14em] text-[#9DD8EA]">{selected.date_label}</p> : null}
                             {selected.source_href ? (
-                                <Link href={selected.source_href} className="mt-3 inline-flex rounded-full bg-white px-4 py-2 text-sm font-black text-[#245E73] transition hover:bg-[#E6F6FA]">
+                                <Link href={selected.source_href} className="mt-2 inline-flex rounded-full bg-white px-4 py-2 text-sm font-black text-[#245E73] transition hover:bg-[#E6F6FA]">
                                     Read Update
                                 </Link>
                             ) : null}
