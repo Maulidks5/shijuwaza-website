@@ -39,7 +39,7 @@ class AdminRoleAccessTest extends TestCase
         $this->assertRouteHasMiddleware('admin.news.destroy', 'permission:delete records');
         $this->assertRouteHasMiddleware('admin.announcements.destroy', 'permission:delete records');
         $this->assertRouteHasMiddleware('admin.resources.destroy', 'permission:delete records');
-        $this->assertRouteHasMiddleware('admin.media.destroy', 'permission:delete records');
+        $this->assertRouteHasMiddleware('admin.media-albums.destroy', 'permission:delete records');
         $this->assertRouteHasMiddleware('admin.donations.destroy', 'permission:delete records');
         $this->assertRouteHasMiddleware('admin.contact-messages.destroy', 'permission:delete records');
     }
@@ -50,7 +50,7 @@ class AdminRoleAccessTest extends TestCase
         $this->assertRouteHasMiddleware('admin.news.archive', 'permission:manage visibility');
         $this->assertRouteHasMiddleware('admin.announcements.archive', 'permission:manage visibility');
         $this->assertRouteHasMiddleware('admin.resources.archive', 'permission:manage visibility');
-        $this->assertRouteHasMiddleware('admin.media.visibility', 'permission:manage visibility');
+        $this->assertRouteHasMiddleware('admin.media-albums.visibility', 'permission:manage visibility');
     }
 
     private function assertRouteHasMiddleware(string $routeName, string $middleware): void

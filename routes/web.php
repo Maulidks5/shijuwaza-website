@@ -122,7 +122,7 @@ Route::middleware(['auth', 'account_active', 'secure_session', 'admin', 'no_back
     Route::resource('/announcements', AnnouncementController::class)->middleware('permission:manage announcements')->except(['show', 'destroy']);
     Route::resource('/resources', ResourceItemController::class)->middleware('permission:manage resources')->parameters(['resources' => 'resource'])->except(['show', 'destroy']);
     Route::resource('/media-albums', MediaAlbumController::class)->middleware('permission:manage media')->parameters(['media-albums' => 'album'])->except(['show', 'destroy']);
-    Route::resource('/media', MediaItemController::class)->middleware('permission:manage media')->parameters(['media' => 'medium'])->except(['show', 'create', 'store', 'destroy']);
+    Route::resource('/media', MediaItemController::class)->middleware('permission:manage media')->only(['index']);
     Route::resource('/members', MemberOrganizationController::class)->middleware('role_or_permission:Super Admin|manage members')->parameters(['members' => 'member'])->except(['show', 'destroy']);
     Route::patch('/members/{member}/account-block', [MemberOrganizationController::class, 'toggleAccountBlock'])->middleware('role_or_permission:Super Admin|manage members')->name('members.account-block');
     Route::resource('/partners', PartnerController::class)->middleware('permission:manage partners')->except(['show', 'destroy']);
@@ -136,7 +136,6 @@ Route::middleware(['auth', 'account_active', 'secure_session', 'admin', 'no_back
         Route::patch('/announcements/{announcement}/archive', [AnnouncementController::class, 'archive'])->name('announcements.archive');
         Route::patch('/resources/{resource}/archive', [ResourceItemController::class, 'archive'])->name('resources.archive');
         Route::patch('/media-albums/{album}/visibility', [MediaAlbumController::class, 'toggleVisibility'])->name('media-albums.visibility');
-        Route::patch('/media/{medium}/visibility', [MediaItemController::class, 'toggleVisibility'])->name('media.visibility');
         Route::patch('/members/{member}/visibility', [MemberOrganizationController::class, 'toggleVisibility'])->name('members.visibility');
         Route::patch('/partners/{partner}/visibility', [PartnerController::class, 'toggleVisibility'])->name('partners.visibility');
         Route::patch('/leadership-profiles/{leadershipProfile}/visibility', [LeadershipProfileController::class, 'toggleVisibility'])->name('leadership-profiles.visibility');
@@ -184,7 +183,6 @@ Route::middleware(['auth', 'account_active', 'secure_session', 'admin', 'no_back
         Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
         Route::delete('/resources/{resource}', [ResourceItemController::class, 'destroy'])->name('resources.destroy');
         Route::delete('/media-albums/{album}', [MediaAlbumController::class, 'destroy'])->name('media-albums.destroy');
-        Route::delete('/media/{medium}', [MediaItemController::class, 'destroy'])->name('media.destroy');
         Route::delete('/members/{member}', [MemberOrganizationController::class, 'destroy'])->name('members.destroy');
         Route::delete('/partners/{partner}', [PartnerController::class, 'destroy'])->name('partners.destroy');
         Route::delete('/leadership-profiles/{leadershipProfile}', [LeadershipProfileController::class, 'destroy'])->name('leadership-profiles.destroy');
