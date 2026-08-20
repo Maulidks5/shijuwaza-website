@@ -114,8 +114,6 @@ class PageController extends Controller
 
         return Inertia::render('Public/Gallery', [
             'featured' => $featured ? $this->formatGalleryImage($featured) : null,
-            'albums' => $this->galleryAlbums(),
-            'currentAlbum' => null,
             'images' => MediaItem::active()
                 ->with('album')
                 ->whereNotNull('image')
@@ -127,37 +125,7 @@ class PageController extends Controller
 
     public function galleryAlbum(MediaAlbum $album): Response
     {
-        abort_unless($album->is_active, 404);
-
-        $featured = $album->mediaItems()
-            ->active()
-            ->whereNotNull('image')
-            ->where('is_featured', true)
-            ->ordered()
-            ->first();
-
-        $featured ??= $album->mediaItems()
-            ->active()
-            ->whereNotNull('image')
-            ->ordered()
-            ->first();
-
-        return Inertia::render('Public/Gallery', [
-            'featured' => $featured ? $this->formatGalleryImage($featured) : null,
-            'albums' => $this->galleryAlbums(),
-            'currentAlbum' => [
-                'name' => $album->name,
-                'slug' => $album->slug,
-                'description' => $album->description,
-            ],
-            'images' => $album->mediaItems()
-                ->active()
-                ->with('album')
-                ->whereNotNull('image')
-                ->ordered()
-                ->paginate(12)
-                ->through(fn (MediaItem $item) => $this->formatGalleryImage($item)),
-        ]);
+        return redirect()->route('gallery');
     }
 
     public function contact(): Response

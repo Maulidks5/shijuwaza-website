@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import SeoHead from '../../Components/Public/SeoHead';
-import { ChevronLeft, ChevronRight, FolderOpen, ImageIcon, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ImageIcon, X } from 'lucide-react';
 import PublicLayout from '../../Layouts/PublicLayout';
 import PageHero from '../../Components/Public/PageHero';
 
-export default function Gallery({ featured = null, albums = [], currentAlbum = null, images = { data: [], links: [] } }) {
+export default function Gallery({ featured = null, images = { data: [], links: [] } }) {
     const items = images.data || images;
     const [selectedId, setSelectedId] = useState(null);
     const previewItems = useMemo(() => items, [items]);
@@ -51,42 +51,20 @@ export default function Gallery({ featured = null, albums = [], currentAlbum = n
 
     return (
         <PublicLayout>
-            <SeoHead title={currentAlbum ? `${currentAlbum.name} Gallery` : 'Gallery'} description="Explore SHIJUWAZA photos from trainings, dialogues, advocacy forums, partner meetings, and disability-inclusive development activities." image={featured?.image_url} />
-            <PageHero eyebrow="Photo Gallery" title={currentAlbum ? currentAlbum.name : 'Moments of inclusion, advocacy, and community action'}>
-                {currentAlbum?.description || 'Explore SHIJUWAZA photos from trainings, dialogues, member engagement, partner meetings, and disability-inclusive development work.'}
+            <SeoHead title="Gallery" description="Explore SHIJUWAZA photos from trainings, dialogues, advocacy forums, partner meetings, and disability-inclusive development activities." image={featured?.image_url} />
+            <PageHero eyebrow="Photo Gallery" title="Moments of inclusion, advocacy, and community action">
+                Explore SHIJUWAZA photos from trainings, dialogues, member engagement, partner meetings, and disability-inclusive development work.
             </PageHero>
 
             <section className="bg-white py-16 lg:py-20">
                 <div className="section-shell">
                     <div className="mb-8 border-b border-[#5BAFCB]/10 pb-6">
-                        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-                            <div>
-                                <p className="eyebrow">Browse Photos</p>
-                                <h2 className="mt-3 text-3xl font-black text-[#245E73]">
-                                    {currentAlbum ? currentAlbum.name : 'All gallery photos'}
-                                </h2>
-                                <p className="mt-3 max-w-2xl leading-7 text-slate-600">
-                                    {currentAlbum?.description || 'All active photos uploaded from the admin gallery are shown here. Albums help visitors filter, but every photo remains easy to find.'}
-                                </p>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                <Link
-                                    href="/gallery"
-                                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-black transition ${!currentAlbum ? 'bg-[#5BAFCB] text-white shadow-sm' : 'bg-white text-[#245E73] hover:bg-[#F3FBFD]'}`}
-                                >
-                                    <ImageIcon size={16} aria-hidden="true" /> All Photos
-                                </Link>
-                                {albums.map((album) => (
-                                    <Link
-                                        key={album.id}
-                                        href={album.href}
-                                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-black transition ${currentAlbum?.slug === album.slug ? 'bg-[#5BAFCB] text-white shadow-sm' : 'bg-white text-[#245E73] hover:bg-[#F3FBFD]'}`}
-                                    >
-                                        <FolderOpen size={16} aria-hidden="true" /> {album.name}
-                                        <span className={`rounded-full px-2 py-0.5 text-xs ${currentAlbum?.slug === album.slug ? 'bg-white/20 text-white' : 'bg-[#F3FBFD] text-[#5BAFCB]'}`}>{album.count}</span>
-                                    </Link>
-                                ))}
-                            </div>
+                        <div>
+                            <p className="eyebrow">Browse Photos</p>
+                            <h2 className="mt-3 text-3xl font-black text-[#245E73]">All gallery photos</h2>
+                            <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+                                All active photos from SHIJUWAZA updates are shown here in one simple gallery.
+                            </p>
                         </div>
                     </div>
 
@@ -102,7 +80,6 @@ export default function Gallery({ featured = null, albums = [], currentAlbum = n
                                     <img src={item.image_url} alt={item.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                                 </div>
                                 <div className="p-5">
-                                    <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5BAFCB]">{item.album?.name || 'Gallery Photo'}</p>
                                     <h3 className="mt-2 text-xl font-black text-[#245E73]">{item.title}</h3>
                                     <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{item.caption}</p>
                                 </div>
