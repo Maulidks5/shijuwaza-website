@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\Concerns\HandlesCmsUploads;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NewsPostRequest;
+use App\Models\MediaAlbum;
+use App\Models\MediaItem;
 use App\Models\NewsPost;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,11 +53,14 @@ class NewsPostController extends Controller
     public function store(NewsPostRequest $request): RedirectResponse
     {
         $this->ensureRelatedLinkColumns();
+        $this->ensureMediaGalleryColumns();
 
         $data = $this->payload($request);
         $data['featured_image'] = $this->storeImage($request, 'featured_image', 'news');
 
-        NewsPost::create($data);
+        $news = NewsPost::create($data);
+
+        $this->syncGalleryImages($request, $news);
 
         return redirect()->route('admin.news.index')->with('success', 'Update created.');
     }
@@ -72,11 +77,15 @@ class NewsPostController extends Controller
     public function update(NewsPostRequest $request, NewsPost $news): RedirectResponse
     {
         $this->ensureRelatedLinkColumns();
+        $this->ensureMediaGalleryColumns();
 
         $data = $this->payload($request, $news);
+        $previousFeaturedImage = $news->featured_image;
         $data['featured_image'] = $this->replaceImage($request, $news, 'featured_image', 'news');
 
         $news->update($data);
+
+        $this->syncGalleryImages($request, $news->fresh(), $previousFeaturedImage);
 
         return redirect()->route('admin.news.index')->with('success', 'Update saved.');
     }
@@ -86,6 +95,10 @@ class NewsPostController extends Controller
         abort_unless(request()->user()?->hasRole('Super Admin'), 403);
 
         $this->deletePublicUpload($news->featured_image);
+        $news->galleryItems()->get()->each(function (MediaItem $item): void {
+            $this->deletePublicUpload($item->image);
+            $item->delete();
+        });
         $news->delete();
 
         return back()->with('success', 'Update deleted.');
@@ -96,13 +109,15 @@ class NewsPostController extends Controller
         abort_unless(request()->user()?->can('manage visibility'), 403);
 
         $news->update(['status' => 'archived']);
+        MediaItem::where('news_post_id', $news->id)->update(['is_active' => false]);
+        MediaAlbum::where('slug', 'update-'.$news->id)->update(['is_active' => false]);
 
         return back()->with('success', 'Update archived.');
     }
 
     private function payload(NewsPostRequest $request, ?NewsPost $post = null): array
     {
-        $data = $request->safe()->except('featured_image');
+        $data = $request->safe()->except(['featured_image', 'gallery_photos']);
         $slug = $data['slug'] ?: Str::slug($data['title']);
 
         if (($data['status'] ?? null) === 'archived' && ! $request->user()?->can('manage visibility')) {
@@ -147,6 +162,85 @@ class NewsPostController extends Controller
                 $table->string('related_link_label')->nullable()->after('related_link_url');
             });
         }
+    }
+
+    private function ensureMediaGalleryColumns(): void
+    {
+        if (! Schema::hasTable('media_items')) {
+            return;
+        }
+
+        if (! Schema::hasColumn('media_items', 'news_post_id')) {
+            Schema::table('media_items', function (Blueprint $table): void {
+                $table->unsignedBigInteger('news_post_id')->nullable()->after('media_album_id');
+            });
+        }
+    }
+
+    private function syncGalleryImages(NewsPostRequest $request, NewsPost $news, ?string $previousFeaturedImage = null): void
+    {
+        $album = $this->galleryAlbumForUpdate($news);
+        $isActive = $news->status === 'published';
+
+        if ($previousFeaturedImage && $previousFeaturedImage !== $news->featured_image) {
+            MediaItem::where('news_post_id', $news->id)
+                ->where('image', $previousFeaturedImage)
+                ->delete();
+        }
+
+        if ($news->featured_image) {
+            MediaItem::updateOrCreate(
+                [
+                    'news_post_id' => $news->id,
+                    'image' => $news->featured_image,
+                ],
+                [
+                    'media_album_id' => $album->id,
+                    'title' => $news->title,
+                    'type' => 'image',
+                    'video_url' => null,
+                    'description' => $news->excerpt,
+                    'sort_order' => 0,
+                    'is_featured' => true,
+                    'is_active' => $isActive,
+                ]
+            );
+        }
+
+        foreach ($request->file('gallery_photos', []) as $index => $photo) {
+            $image = $this->storeImageFromFile($photo, 'media');
+
+            MediaItem::create([
+                'media_album_id' => $album->id,
+                'news_post_id' => $news->id,
+                'title' => $news->title.' Photo '.($index + 1),
+                'type' => 'image',
+                'image' => $image,
+                'video_url' => null,
+                'description' => $news->excerpt,
+                'sort_order' => $index + 1,
+                'is_featured' => false,
+                'is_active' => $isActive,
+            ]);
+        }
+
+        MediaItem::where('news_post_id', $news->id)->update([
+            'media_album_id' => $album->id,
+            'is_active' => $isActive,
+        ]);
+    }
+
+    private function galleryAlbumForUpdate(NewsPost $news): MediaAlbum
+    {
+        return MediaAlbum::updateOrCreate(
+            ['slug' => 'update-'.$news->id],
+            [
+                'name' => $news->title,
+                'description' => $news->excerpt,
+                'sort_order' => $news->sort_order,
+                'is_active' => $news->status === 'published',
+            ]
+        );
     }
 
     private function uniqueSlug(string $slug, ?int $ignoreId = null): string

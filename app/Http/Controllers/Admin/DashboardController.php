@@ -62,7 +62,6 @@ class DashboardController extends Controller
             ['permission' => 'manage news', 'label' => 'Add Update', 'href' => '/admin/news/create', 'icon' => 'Newspaper'],
             ['permission' => 'manage announcements', 'label' => 'Add Announcement', 'href' => '/admin/announcements/create', 'icon' => 'Megaphone'],
             ['permission' => 'manage resources', 'label' => 'Add Publication', 'href' => '/admin/resources/create', 'icon' => 'LibraryBig'],
-            ['permission' => 'manage media', 'label' => 'Add Photo/Video', 'href' => '/admin/media/create', 'icon' => 'ImagePlus'],
             ['permission' => 'manage media', 'label' => 'Create Album', 'href' => '/admin/media-albums/create', 'icon' => 'FolderPlus'],
             ['permission' => 'manage programs', 'label' => 'Add Program', 'href' => '/admin/programs/create', 'icon' => 'BriefcaseBusiness'],
             ['permission' => 'manage members', 'label' => 'Add Member', 'href' => '/admin/members/create', 'icon' => 'UserPlus'],

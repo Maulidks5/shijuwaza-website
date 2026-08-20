@@ -14,6 +14,7 @@ export default function NewsForm({ post, categories = {}, relatedLinkTypes = {} 
         excerpt: post?.excerpt || '',
         body: post?.body || '',
         featured_image: null,
+        gallery_photos: [],
         activity_date: post?.activity_date_value || '',
         published_at: dateValue,
         status: post?.status || 'draft',
@@ -48,6 +49,20 @@ export default function NewsForm({ post, categories = {}, relatedLinkTypes = {} 
                     <Field label="Published At" error={errors.published_at}><input type="datetime-local" className={inputClass} value={data.published_at} onChange={(event) => setData('published_at', event.target.value)} /></Field>
                     <Field label="Featured Image" error={errors.featured_image}><input type="file" accept="image/*" onChange={(event) => setData('featured_image', event.target.files[0])} /></Field>
                 </div>
+                <section className="grid gap-4 rounded-xl border border-[#9DD8EA]/35 bg-[#F8FAFC] p-5">
+                    <div>
+                        <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5BAFCB]">Gallery Photos</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-500">Upload extra activity photos here. They will appear automatically on the public gallery.</p>
+                    </div>
+                    <Field label="Activity Gallery Photos" error={errors.gallery_photos || errors['gallery_photos.0']}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(event) => setData('gallery_photos', Array.from(event.target.files || []))}
+                        />
+                    </Field>
+                </section>
                 <section className="grid gap-5 rounded-xl border border-[#9DD8EA]/35 bg-[#F8FAFC] p-5">
                     <div>
                         <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5BAFCB]">Related Link</p>

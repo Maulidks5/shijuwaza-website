@@ -3,7 +3,7 @@ import AdminLayout from '../../../Layouts/AdminLayout';
 import AdminTable from '../../../Components/Admin/AdminTable';
 import { StatusBadge } from '../../../Components/Admin/FormControls';
 import IconAction from '../../../Components/Admin/IconAction';
-import { Eye, EyeOff, FolderOpen, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, FolderOpen, Pencil, Trash2 } from 'lucide-react';
 import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
 import useConfirmDelete from '../../../Components/Admin/useConfirmDelete';
 
@@ -27,9 +27,6 @@ export default function MediaIndex({ items = [] }) {
                 <div className="flex flex-wrap gap-2">
                     <Link href="/admin/media-albums" className="inline-flex items-center gap-2 rounded-lg border border-[#9DD8EA]/20 px-4 py-2 font-black text-[#245E73]">
                         <FolderOpen size={17} aria-hidden="true" /> Albums
-                    </Link>
-                    <Link href="/admin/media/create" className="inline-flex items-center gap-2 rounded-lg bg-[#9DD8EA] px-4 py-2 font-black text-[#173B49]">
-                        <Plus size={17} aria-hidden="true" /> Add Photo
                     </Link>
                 </div>
             )}

@@ -122,7 +122,7 @@ Route::middleware(['auth', 'account_active', 'secure_session', 'admin', 'no_back
     Route::resource('/announcements', AnnouncementController::class)->middleware('permission:manage announcements')->except(['show', 'destroy']);
     Route::resource('/resources', ResourceItemController::class)->middleware('permission:manage resources')->parameters(['resources' => 'resource'])->except(['show', 'destroy']);
     Route::resource('/media-albums', MediaAlbumController::class)->middleware('permission:manage media')->parameters(['media-albums' => 'album'])->except(['show', 'destroy']);
-    Route::resource('/media', MediaItemController::class)->middleware('permission:manage media')->parameters(['media' => 'medium'])->except(['show', 'destroy']);
+    Route::resource('/media', MediaItemController::class)->middleware('permission:manage media')->parameters(['media' => 'medium'])->except(['show', 'create', 'store', 'destroy']);
     Route::resource('/members', MemberOrganizationController::class)->middleware('role_or_permission:Super Admin|manage members')->parameters(['members' => 'member'])->except(['show', 'destroy']);
     Route::patch('/members/{member}/account-block', [MemberOrganizationController::class, 'toggleAccountBlock'])->middleware('role_or_permission:Super Admin|manage members')->name('members.account-block');
     Route::resource('/partners', PartnerController::class)->middleware('permission:manage partners')->except(['show', 'destroy']);

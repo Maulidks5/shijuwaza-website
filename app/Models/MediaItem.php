@@ -13,6 +13,7 @@ class MediaItem extends Model
 
     protected $fillable = [
         'media_album_id',
+        'news_post_id',
         'title',
         'type',
         'image',
@@ -26,6 +27,11 @@ class MediaItem extends Model
     public function album(): BelongsTo
     {
         return $this->belongsTo(MediaAlbum::class, 'media_album_id');
+    }
+
+    public function newsPost(): BelongsTo
+    {
+        return $this->belongsTo(NewsPost::class);
     }
 
     protected function casts(): array

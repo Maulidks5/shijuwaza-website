@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use App\Support\PublicUploads;
 
 trait HandlesCmsUploads
@@ -14,7 +15,12 @@ trait HandlesCmsUploads
             return null;
         }
 
-        return PublicUploads::store($request->file($field), $directory);
+        return $this->storeImageFromFile($request->file($field), $directory);
+    }
+
+    protected function storeImageFromFile(UploadedFile $file, string $directory): string
+    {
+        return PublicUploads::store($file, $directory);
     }
 
     protected function replaceImage(Request $request, Model $model, string $field, string $directory): ?string

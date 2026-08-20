@@ -24,6 +24,8 @@ class NewsPostRequest extends FormRequest
             'excerpt' => ['required', 'string', 'max:1200'],
             'body' => ['nullable', 'string'],
             'featured_image' => ['nullable', 'image', 'max:4096'],
+            'gallery_photos' => ['nullable', 'array', 'max:24'],
+            'gallery_photos.*' => ['image', 'max:8192'],
             'activity_date' => ['nullable', 'date'],
             'published_at' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
