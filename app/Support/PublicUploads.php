@@ -60,7 +60,20 @@ class PublicUploads
         $path = ltrim($path, '/');
 
         if (str_starts_with($path, 'storage/')) {
-            return self::publicRoot().DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $path);
+            $relativePath = substr($path, strlen('storage/'));
+            $primaryPath = self::storagePath($relativePath);
+
+            if (is_file($primaryPath)) {
+                return $primaryPath;
+            }
+
+            $fallbackPath = storage_path('app/public/'.str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
+
+            if (is_file($fallbackPath)) {
+                return $fallbackPath;
+            }
+
+            return $primaryPath;
         }
 
         return self::storagePath($path);

@@ -107,7 +107,6 @@ class PageController extends Controller
     public function gallery(): Response
     {
         $featured = MediaItem::active()
-            ->where('type', 'image')
             ->whereNotNull('image')
             ->where('is_featured', true)
             ->ordered()
@@ -119,7 +118,6 @@ class PageController extends Controller
             'currentAlbum' => null,
             'images' => MediaItem::active()
                 ->with('album')
-                ->where('type', 'image')
                 ->whereNotNull('image')
                 ->ordered()
                 ->paginate(12)
@@ -133,7 +131,6 @@ class PageController extends Controller
 
         $featured = $album->mediaItems()
             ->active()
-            ->where('type', 'image')
             ->whereNotNull('image')
             ->where('is_featured', true)
             ->ordered()
@@ -141,7 +138,6 @@ class PageController extends Controller
 
         $featured ??= $album->mediaItems()
             ->active()
-            ->where('type', 'image')
             ->whereNotNull('image')
             ->ordered()
             ->first();
@@ -157,7 +153,6 @@ class PageController extends Controller
             'images' => $album->mediaItems()
                 ->active()
                 ->with('album')
-                ->where('type', 'image')
                 ->whereNotNull('image')
                 ->ordered()
                 ->paginate(12)
@@ -368,7 +363,7 @@ class PageController extends Controller
     private function galleryAlbums()
     {
         return MediaAlbum::active()
-            ->withCount(['mediaItems' => fn ($query) => $query->active()->where('type', 'image')->whereNotNull('image')])
+            ->withCount(['mediaItems' => fn ($query) => $query->active()->whereNotNull('image')])
             ->ordered()
             ->get()
             ->map(fn (MediaAlbum $album) => [
