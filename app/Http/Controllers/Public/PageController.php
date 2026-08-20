@@ -109,16 +109,16 @@ class PageController extends Controller
         $featured = MediaItem::active()
             ->whereNotNull('image')
             ->where('is_featured', true)
-            ->ordered()
+            ->latest()
             ->first();
 
         return Inertia::render('Public/Gallery', [
             'featured' => $featured ? $this->formatGalleryImage($featured) : null,
             'images' => MediaItem::active()
-                ->with('album')
+                ->with(['album', 'newsPost'])
                 ->whereNotNull('image')
-                ->ordered()
-                ->paginate(12)
+                ->latest()
+                ->paginate(18)
                 ->through(fn (MediaItem $item) => $this->formatGalleryImage($item)),
         ]);
     }
@@ -294,6 +294,8 @@ class PageController extends Controller
 
     private function formatGalleryImage(MediaItem $item): array
     {
+        $date = $item->newsPost?->activity_date ?: $item->newsPost?->published_at ?: $item->created_at;
+
         return [
             ...$item->toArray(),
             'image_url' => $this->imageUrl($item->image),
@@ -302,6 +304,10 @@ class PageController extends Controller
                 'slug' => $item->album->slug,
             ] : null,
             'caption' => $item->description ?: 'SHIJUWAZA activity photo documenting inclusion, participation, and organizational work.',
+            'month_label' => $date?->format('F Y') ?: 'Recent Photos',
+            'date_label' => $date?->format('F j, Y'),
+            'source_title' => $item->newsPost?->title,
+            'source_href' => $item->newsPost ? route('news.show', $item->newsPost->slug) : null,
         ];
     }
 
