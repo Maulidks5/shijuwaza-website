@@ -26,7 +26,7 @@ const updates = [
 ];
 
 export default function NewsPreview({ posts = updates }) {
-    const items = (posts.length ? posts : updates).slice(0, 3);
+    const items = (posts.length ? posts : updates).slice(0, 6);
     const useCarousel = items.length > 3;
 
     return (

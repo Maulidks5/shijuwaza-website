@@ -119,6 +119,7 @@ class HomeController extends Controller
         try {
             $items = NewsPost::published()
                 ->latest('published_at')
+                ->latest('created_at')
                 ->take(6)
                 ->get();
         } catch (\Throwable) {
