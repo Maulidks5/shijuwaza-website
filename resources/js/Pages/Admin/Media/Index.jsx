@@ -1,21 +1,10 @@
-import { Link } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import AdminTable from '../../../Components/Admin/AdminTable';
 import { StatusBadge } from '../../../Components/Admin/FormControls';
-import { FolderOpen } from 'lucide-react';
 
 export default function MediaIndex({ items = [] }) {
     return (
-        <AdminLayout
-            title="Media Gallery"
-            actions={(
-                <div className="flex flex-wrap gap-2">
-                    <Link href="/admin/media-albums" className="inline-flex items-center gap-2 rounded-lg border border-[#9DD8EA]/20 px-4 py-2 font-black text-[#245E73]">
-                        <FolderOpen size={17} aria-hidden="true" /> Albums
-                    </Link>
-                </div>
-            )}
-        >
+        <AdminLayout title="Media Gallery">
             <AdminTable columns={['Photo', 'Album', 'Source', 'Order', 'Featured', 'Status']}>
                 {items.map((item) => (
                     <tr key={item.id}>
