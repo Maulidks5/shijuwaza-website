@@ -54,14 +54,13 @@ class NewsPost extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', 'published')
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+        return $query->where('status', 'published');
     }
 
     public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('sort_order')->latest('published_at');
+        return $query->orderBy('sort_order')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC');
     }
 
     public function galleryItems(): HasMany

@@ -118,8 +118,7 @@ class HomeController extends Controller
     {
         try {
             $items = NewsPost::published()
-                ->latest('published_at')
-                ->latest('created_at')
+                ->orderByRaw('COALESCE(published_at, created_at) DESC')
                 ->take(6)
                 ->get();
         } catch (\Throwable) {
@@ -137,7 +136,7 @@ class HomeController extends Controller
                 ...$data,
                 'image_url' => $this->imageUrl($data['featured_image'] ?? null),
                 'category_label' => is_array($post) ? ($data['category_label'] ?? 'Activity') : (NewsPost::CATEGORIES[$post->category] ?? 'Activity'),
-                'date_label' => $data['date'] ?? $post->activity_date?->format('F Y') ?? $post->published_at?->format('F Y'),
+                'date_label' => $data['date'] ?? $post->activity_date?->format('F Y') ?? $post->published_at?->format('F Y') ?? $post->created_at?->format('F Y'),
                 'related_link_url' => $data['related_link_url'] ?? null,
                 'related_link_type' => $data['related_link_type'] ?? null,
                 'related_link_label' => $data['related_link_label'] ?? null,

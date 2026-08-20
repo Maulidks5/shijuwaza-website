@@ -60,8 +60,7 @@ class PageController extends Controller
                     ->orWhere('excerpt', 'like', "%{$search}%")
                     ->orWhere('body', 'like', "%{$search}%");
             }))
-            ->latest('published_at')
-            ->latest('created_at')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->paginate(9)
             ->through(fn (NewsPost $post) => $this->formatNewsPost($post))
             ->withQueryString();
@@ -88,8 +87,7 @@ class PageController extends Controller
             'relatedPosts' => NewsPost::published()
                 ->whereKeyNot($newsPost->id)
                 ->where('category', $newsPost->category)
-                ->latest('published_at')
-                ->latest('created_at')
+                ->orderByRaw('COALESCE(published_at, created_at) DESC')
                 ->take(3)
                 ->get()
                 ->map(fn (NewsPost $post) => $this->formatNewsPost($post)),
@@ -345,8 +343,8 @@ class PageController extends Controller
             ...$post->toArray(),
             'image_url' => $this->imageUrl($post->featured_image),
             'category_label' => NewsPost::CATEGORIES[$post->category] ?? $post->category,
-            'date_label' => $post->activity_date?->format('F j, Y') ?: $post->published_at?->format('F j, Y'),
-            'published_label' => $post->published_at?->format('F j, Y'),
+            'date_label' => $post->activity_date?->format('F j, Y') ?: $post->published_at?->format('F j, Y') ?: $post->created_at?->format('F j, Y'),
+            'published_label' => $post->published_at?->format('F j, Y') ?: $post->created_at?->format('F j, Y'),
             'related_link_type_label' => NewsPost::RELATED_LINK_TYPES[$post->related_link_type] ?? null,
             'related_link_label' => $post->related_link_label ?: $this->defaultRelatedLinkLabel($post->related_link_type),
         ];
