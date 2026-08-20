@@ -60,7 +60,8 @@ class PageController extends Controller
                     ->orWhere('excerpt', 'like', "%{$search}%")
                     ->orWhere('body', 'like', "%{$search}%");
             }))
-            ->ordered()
+            ->latest('published_at')
+            ->latest('created_at')
             ->paginate(9)
             ->through(fn (NewsPost $post) => $this->formatNewsPost($post))
             ->withQueryString();
@@ -87,7 +88,8 @@ class PageController extends Controller
             'relatedPosts' => NewsPost::published()
                 ->whereKeyNot($newsPost->id)
                 ->where('category', $newsPost->category)
-                ->ordered()
+                ->latest('published_at')
+                ->latest('created_at')
                 ->take(3)
                 ->get()
                 ->map(fn (NewsPost $post) => $this->formatNewsPost($post)),

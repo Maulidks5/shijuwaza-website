@@ -124,6 +124,10 @@ class NewsPostController extends Controller
             abort(403);
         }
 
+        if (($data['status'] ?? null) === 'published' && blank($data['published_at'] ?? null)) {
+            $data['published_at'] = now();
+        }
+
         if (blank($data['related_link_url'] ?? null)) {
             $data['related_link_type'] = null;
             $data['related_link_url'] = null;
