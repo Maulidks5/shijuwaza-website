@@ -17,8 +17,8 @@ class MediaItemRequest extends FormRequest
         return [
             'media_album_id' => ['nullable', 'integer', 'exists:media_albums,id'],
             'title' => ['required', 'string', 'max:255'],
-            'type' => ['required', Rule::in(['image', 'video'])],
-            'image' => ['nullable', 'image', 'max:4096'],
+            'type' => ['nullable', Rule::in(['image', 'video'])],
+            'image' => [$this->route('medium') ? 'nullable' : 'required', 'image', 'max:4096'],
             'video_url' => ['nullable', 'url', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'sort_order' => ['nullable', 'integer', 'min:0'],

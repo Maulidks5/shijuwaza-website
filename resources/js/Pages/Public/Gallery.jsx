@@ -1,20 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import SeoHead from '../../Components/Public/SeoHead';
-import { Camera, ChevronLeft, ChevronRight, FolderOpen, ImageIcon, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FolderOpen, ImageIcon, X } from 'lucide-react';
 import PublicLayout from '../../Layouts/PublicLayout';
 import PageHero from '../../Components/Public/PageHero';
 
 export default function Gallery({ featured = null, albums = [], currentAlbum = null, images = { data: [], links: [] } }) {
     const items = images.data || images;
     const [selectedId, setSelectedId] = useState(null);
-    const previewItems = useMemo(() => {
-        if (!featured || items.some((item) => item.id === featured.id)) {
-            return items;
-        }
-
-        return [featured, ...items];
-    }, [featured, items]);
+    const previewItems = useMemo(() => items, [items]);
     const selectedIndex = useMemo(() => previewItems.findIndex((item) => item.id === selectedId), [previewItems, selectedId]);
     const selected = selectedIndex >= 0 ? previewItems[selectedIndex] : null;
 
@@ -64,11 +58,16 @@ export default function Gallery({ featured = null, albums = [], currentAlbum = n
 
             <section className="bg-white py-16 lg:py-20">
                 <div className="section-shell">
-                    <div className="mb-10 rounded-3xl border border-[#5BAFCB]/10 bg-[#F8FAFC] p-5 shadow-sm">
-                        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+                    <div className="mb-8 border-b border-[#5BAFCB]/10 pb-6">
+                        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
                             <div>
-                                <p className="eyebrow">Albums</p>
-                                <h2 className="mt-2 text-2xl font-black text-[#245E73]">Browse by activity category</h2>
+                                <p className="eyebrow">Browse Photos</p>
+                                <h2 className="mt-3 text-3xl font-black text-[#245E73]">
+                                    {currentAlbum ? currentAlbum.name : 'All gallery photos'}
+                                </h2>
+                                <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+                                    {currentAlbum?.description || 'All active photos uploaded from the admin gallery are shown here. Albums help visitors filter, but every photo remains easy to find.'}
+                                </p>
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 <Link
@@ -91,33 +90,7 @@ export default function Gallery({ featured = null, albums = [], currentAlbum = n
                         </div>
                     </div>
 
-                    {featured ? (
-                        <article className="overflow-hidden rounded-3xl border border-[#5BAFCB]/10 bg-[#F8FAFC] shadow-sm lg:grid lg:grid-cols-[1.25fr_0.75fr]">
-                            <button type="button" onClick={() => openImage(featured)} className="group relative min-h-[360px] overflow-hidden text-left">
-                                <img src={featured.image_url} alt={featured.title} className="h-full min-h-[360px] w-full object-cover transition duration-500 group-hover:scale-105" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#245E73]/50 via-transparent to-transparent" />
-                                <span className="absolute bottom-5 left-5 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#245E73] shadow-sm">View featured photo</span>
-                            </button>
-                            <div className="flex flex-col justify-center p-7 lg:p-10">
-                                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#F3FBFD] text-[#5BAFCB]">
-                                    <Camera aria-hidden="true" size={26} />
-                                </div>
-                                <p className="eyebrow mt-6">Featured Gallery</p>
-                                <h2 className="mt-3 text-3xl font-black text-[#245E73]">{featured.title}</h2>
-                                <p className="mt-4 leading-8 text-slate-600">{featured.caption}</p>
-                            </div>
-                        </article>
-                    ) : null}
-
-                    <div className="mt-12 flex flex-col justify-between gap-4 border-b border-[#5BAFCB]/10 pb-6 md:flex-row md:items-end">
-                        <div>
-                            <p className="eyebrow">Our Photos</p>
-                            <h2 className="mt-3 text-3xl font-black text-[#245E73]">Visual stories from SHIJUWAZA work</h2>
-                        </div>
-                        <p className="max-w-xl leading-7 text-slate-600">Click any image to view it in a larger, cleaner preview.</p>
-                    </div>
-
-                    <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {items.length ? items.map((item, index) => (
                             <button
                                 key={item.id}

@@ -29,17 +29,16 @@ export default function MediaIndex({ items = [] }) {
                         <FolderOpen size={17} aria-hidden="true" /> Albums
                     </Link>
                     <Link href="/admin/media/create" className="inline-flex items-center gap-2 rounded-lg bg-[#9DD8EA] px-4 py-2 font-black text-[#173B49]">
-                        <Plus size={17} aria-hidden="true" /> Add Media
+                        <Plus size={17} aria-hidden="true" /> Add Photo
                     </Link>
                 </div>
             )}
         >
-            <AdminTable columns={['Title', 'Album', 'Type', 'Order', 'Featured', 'Status', 'Actions']}>
+            <AdminTable columns={['Photo', 'Album', 'Order', 'Featured', 'Status', 'Actions']}>
                 {items.map((item) => (
                     <tr key={item.id}>
                         <td className="px-5 py-4 font-black">{item.title}<p className="font-normal text-slate-500">{item.description}</p></td>
                         <td className="px-5 py-4 text-sm font-bold text-slate-600">{item.album?.name || 'Unassigned'}</td>
-                        <td className="px-5 py-4">{item.type}</td>
                         <td className="px-5 py-4">{item.sort_order}</td>
                         <td className="px-5 py-4"><StatusBadge active={item.is_featured}>{item.is_featured ? 'Featured' : 'Normal'}</StatusBadge></td>
                         <td className="px-5 py-4"><StatusBadge active={item.is_active} /></td>

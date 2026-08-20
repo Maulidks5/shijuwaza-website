@@ -9,9 +9,7 @@ export default function MediaForm({ item, albums = [] }) {
     const { data, setData, post, processing, errors } = useForm({
         title: item?.title || '',
         media_album_id: item?.media_album_id || '',
-        type: item?.type || 'image',
         image: null,
-        video_url: item?.video_url || '',
         description: item?.description || '',
         sort_order: item?.sort_order || 0,
         is_featured: item?.is_featured ?? false,
@@ -27,10 +25,7 @@ export default function MediaForm({ item, albums = [] }) {
     return (
         <AdminLayout title={editing ? 'Edit Media Item' : 'Create Media Item'}>
             <form onSubmit={submit} className="grid max-w-4xl gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="grid gap-5 md:grid-cols-2">
-                    <Field label="Title" error={errors.title}><input className={inputClass} value={data.title} onChange={(event) => setData('title', event.target.value)} /></Field>
-                    <Field label="Type" error={errors.type}><select className={inputClass} value={data.type} onChange={(event) => setData('type', event.target.value)}><option value="image">Image</option><option value="video">Video</option></select></Field>
-                </div>
+                <Field label="Photo Title" error={errors.title}><input className={inputClass} value={data.title} onChange={(event) => setData('title', event.target.value)} /></Field>
                 <Field label="Gallery Album" error={errors.media_album_id}>
                     <select className={inputClass} value={data.media_album_id} onChange={(event) => setData('media_album_id', event.target.value)}>
                         <option value="">Unassigned</option>
@@ -39,8 +34,8 @@ export default function MediaForm({ item, albums = [] }) {
                 </Field>
                 <Field label="Description" error={errors.description}><textarea rows="4" className={inputClass} value={data.description} onChange={(event) => setData('description', event.target.value)} /></Field>
                 <div className="grid gap-5 md:grid-cols-2">
-                    <Field label="Image" error={errors.image}><input type="file" accept="image/*" onChange={(event) => setData('image', event.target.files[0])} /></Field>
-                    <Field label="Video URL" error={errors.video_url}><input className={inputClass} value={data.video_url} onChange={(event) => setData('video_url', event.target.value)} /></Field>
+                    <Field label={editing ? 'Replace Photo' : 'Photo'} error={errors.image}><input type="file" accept="image/*" onChange={(event) => setData('image', event.target.files[0])} /></Field>
+                    <Field label="Display Order" error={errors.sort_order}><input type="number" min="0" className={inputClass} value={data.sort_order} onChange={(event) => setData('sort_order', event.target.value)} /></Field>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
                     <Toggle label="Featured" checked={data.is_featured} onChange={(value) => setData('is_featured', value)} />

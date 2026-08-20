@@ -35,7 +35,8 @@ class MediaItemController extends Controller
         $data = $request->safe()->except('image');
         $data['media_album_id'] = $request->integer('media_album_id') ?: null;
         $data['image'] = $this->storeImage($request, 'image', 'media');
-        $data['type'] = $request->hasFile('image') ? 'image' : $data['type'];
+        $data['type'] = 'image';
+        $data['video_url'] = null;
         $data['sort_order'] = $request->integer('sort_order');
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active'] = $request->user()?->can('manage visibility') ? $request->boolean('is_active') : true;
@@ -58,7 +59,8 @@ class MediaItemController extends Controller
         $data = $request->safe()->except('image');
         $data['media_album_id'] = $request->integer('media_album_id') ?: null;
         $data['image'] = $this->replaceImage($request, $medium, 'image', 'media');
-        $data['type'] = $request->hasFile('image') ? 'image' : $data['type'];
+        $data['type'] = 'image';
+        $data['video_url'] = null;
         $data['sort_order'] = $request->integer('sort_order');
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active'] = $request->user()?->can('manage visibility') ? $request->boolean('is_active') : $medium->is_active;
