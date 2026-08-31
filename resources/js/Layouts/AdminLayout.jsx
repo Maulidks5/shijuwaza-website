@@ -19,41 +19,80 @@ import {
     UserPlus,
     IdCard,
     UsersRound,
+    ChevronDown,
 } from 'lucide-react';
 import RoleBadge from '../Components/Admin/RoleBadge';
 import SessionSecurity from '../Components/Security/SessionSecurity';
 
-const navItems = [
-    { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, permission: 'view dashboard' },
-    { label: 'Users', href: '/admin/users', icon: UserPlus, permission: 'manage users' },
-    { label: 'Hero Section', href: '/admin/hero-section', icon: LayoutPanelTop, permission: 'manage hero section' },
-    { label: 'Homepage Stats', href: '/admin/stats', icon: BarChart3, permission: 'manage homepage stats' },
-    { label: 'Programs', href: '/admin/programs', icon: Shapes, permission: 'manage programs' },
-    { label: 'Updates & Activities', href: '/admin/news', icon: Newspaper, permission: 'manage news' },
-    { label: 'Announcements', href: '/admin/announcements', icon: Megaphone, permission: 'manage announcements' },
-    { label: 'Resources', href: '/admin/resources', icon: BookOpenText, permission: 'manage resources' },
-    { label: 'Media Gallery', href: '/admin/media', icon: Image, permission: 'manage media' },
-    { label: 'Members', href: '/admin/members', icon: UsersRound, permission: 'manage members' },
-    { label: 'Leadership Profiles', href: '/admin/leadership-profiles', icon: IdCard, permission: 'manage leadership profiles' },
-    { label: 'Partners', href: '/admin/partners', icon: UsersRound, permission: 'manage partners' },
-    { label: 'Contact Messages', href: '/admin/contact-messages', icon: Inbox, permission: 'manage contact messages' },
-    { label: 'Whistle Blowers', href: '/admin/whistleblower-reports', icon: ShieldAlert, permission: 'manage whistleblower reports' },
-    { label: 'Donations', href: '/admin/donations', icon: HandHeart, permission: 'manage donations' },
-    { label: 'Partnership Requests', href: '/admin/partnership-requests', icon: UserPlus, permission: 'manage partnership requests' },
-    { label: 'Visitors', href: '/admin/visitors', icon: BarChart3, permission: 'manage visitor analytics' },
-    { label: 'Settings', href: '/admin/settings', icon: Settings, permission: 'manage settings' },
+const navGroups = [
+    {
+        label: 'Dashboard',
+        icon: LayoutDashboard,
+        items: [
+            { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, permission: 'view dashboard' },
+            { label: 'Homepage Stats', href: '/admin/stats', icon: BarChart3, permission: 'manage homepage stats' },
+            { label: 'Visitors', href: '/admin/visitors', icon: BarChart3, permission: 'manage visitor analytics' },
+        ],
+    },
+    {
+        label: 'Content',
+        icon: BookOpenText,
+        items: [
+            { label: 'Hero Section', href: '/admin/hero-section', icon: LayoutPanelTop, permission: 'manage hero section' },
+            { label: 'Programs', href: '/admin/programs', icon: Shapes, permission: 'manage programs' },
+            { label: 'Updates & Activities', href: '/admin/news', icon: Newspaper, permission: 'manage news' },
+            { label: 'Announcements', href: '/admin/announcements', icon: Megaphone, permission: 'manage announcements' },
+            { label: 'Resources', href: '/admin/resources', icon: BookOpenText, permission: 'manage resources' },
+            { label: 'Media Gallery', href: '/admin/media', icon: Image, permission: 'manage media' },
+        ],
+    },
+    {
+        label: 'People & Members',
+        icon: UsersRound,
+        items: [
+            { label: 'Users', href: '/admin/users', icon: UserPlus, permission: 'manage users' },
+            { label: 'Members', href: '/admin/members', icon: UsersRound, permission: 'manage members' },
+            { label: 'Leadership Profiles', href: '/admin/leadership-profiles', icon: IdCard, permission: 'manage leadership profiles' },
+        ],
+    },
+    {
+        label: 'Engagement',
+        icon: Inbox,
+        items: [
+            { label: 'Partners', href: '/admin/partners', icon: UsersRound, permission: 'manage partners' },
+            { label: 'Contact Messages', href: '/admin/contact-messages', icon: Inbox, permission: 'manage contact messages' },
+            { label: 'Whistle Blowers', href: '/admin/whistleblower-reports', icon: ShieldAlert, permission: 'manage whistleblower reports' },
+            { label: 'Donations', href: '/admin/donations', icon: HandHeart, permission: 'manage donations' },
+            { label: 'Partnership Requests', href: '/admin/partnership-requests', icon: UserPlus, permission: 'manage partnership requests' },
+        ],
+    },
+    {
+        label: 'System',
+        icon: Settings,
+        items: [
+            { label: 'Settings', href: '/admin/settings', icon: Settings, permission: 'manage settings' },
+        ],
+    },
 ];
 
 export default function AdminLayout({ title, actions, children }) {
     const [profileOpen, setProfileOpen] = useState(false);
     const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const [expandedGroups, setExpandedGroups] = useState({});
     const page = usePage();
     const { auth, flash, adminNotifications = { total: 0, items: [], badges: {} } } = page.props;
     const url = page.url;
     const permissions = auth.user?.permissions || [];
     const primaryRole = auth.user?.roles?.[0];
     const isSuperAdmin = auth.user?.roles?.includes('Super Admin');
-    const visibleNavItems = navItems.filter((item) => isSuperAdmin || permissions.includes(item.permission));
+    const visibleNavGroups = navGroups
+        .map((group) => ({
+            ...group,
+            items: group.items.filter((item) => isSuperAdmin || permissions.includes(item.permission)),
+        }))
+        .filter((group) => group.items.length);
+    const visibleNavItems = visibleNavGroups.flatMap((group) => group.items);
+    const toggleGroup = (label) => setExpandedGroups((current) => ({ ...current, [label]: !current[label] }));
     const initials = auth.user?.name
         ?.split(' ')
         .map((part) => part[0])
@@ -64,28 +103,56 @@ export default function AdminLayout({ title, actions, children }) {
     return (
         <div className="admin-shell min-h-screen bg-[#F3FBFD] text-slate-900">
             <SessionSecurity />
-            <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-[#9DD8EA]/50 bg-white text-[#173B49] shadow-[12px_0_45px_rgba(74,136,154,0.08)] lg:block">
+            <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-[#9DD8EA]/50 bg-white text-[#173B49] shadow-[12px_0_45px_rgba(74,136,154,0.08)] lg:flex lg:flex-col">
                 <div className="border-b border-[#9DD8EA]/45 bg-[#9DD8EA]/45 p-6">
                     <p className="text-xs font-black uppercase tracking-[0.18em] text-[#245E73]">SHIJUWAZA CMS</p>
                     <h1 className="mt-2 text-2xl font-black text-[#173B49]">Admin Panel</h1>
                 </div>
-                <nav className="grid gap-1 p-4">
-                    {visibleNavItems.map(({ label, href, icon: Icon }) => {
-                        const active = url.startsWith(href);
-                        const badgeCount = adminNotifications.badges?.[href] || 0;
+                <nav className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+                    {visibleNavGroups.map(({ label, icon: GroupIcon, items }) => {
+                        const groupActive = items.some((item) => url.startsWith(item.href));
+                        const groupBadgeCount = items.reduce((total, item) => total + (adminNotifications.badges?.[item.href] || 0), 0);
+                        const open = groupActive || Boolean(expandedGroups[label]);
 
                         return (
-                            <a
-                                key={href}
-                                href={href}
-                                className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold transition ${
-                                    active ? 'bg-[#9DD8EA] text-[#173B49] shadow-sm' : 'text-[#245E73] hover:bg-[#F3FBFD] hover:text-[#173B49]'
-                                }`}
-                            >
-                                <Icon aria-hidden="true" size={18} />
-                                <span className="min-w-0 flex-1">{label}</span>
-                                {badgeCount ? <Badge count={badgeCount} /> : null}
-                            </a>
+                            <div key={label} className="rounded-2xl border border-[#9DD8EA]/35 bg-[#F8FCFE] p-2">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleGroup(label)}
+                                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-black transition ${
+                                        groupActive ? 'bg-white text-[#173B49] shadow-sm' : 'text-[#245E73] hover:bg-white'
+                                    }`}
+                                    aria-expanded={open}
+                                >
+                                    <GroupIcon aria-hidden="true" size={18} />
+                                    <span className="min-w-0 flex-1">{label}</span>
+                                    {groupBadgeCount ? <Badge count={groupBadgeCount} /> : null}
+                                    <ChevronDown aria-hidden="true" size={17} className={`shrink-0 transition ${open ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {open ? (
+                                    <div className="mt-1 grid gap-1">
+                                        {items.map(({ label: itemLabel, href, icon: Icon }) => {
+                                            const active = url.startsWith(href);
+                                            const badgeCount = adminNotifications.badges?.[href] || 0;
+
+                                            return (
+                                                <a
+                                                    key={href}
+                                                    href={href}
+                                                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold transition ${
+                                                        active ? 'bg-[#9DD8EA] text-[#173B49] shadow-sm' : 'text-[#245E73] hover:bg-white hover:text-[#173B49]'
+                                                    }`}
+                                                >
+                                                    <Icon aria-hidden="true" size={17} />
+                                                    <span className="min-w-0 flex-1">{itemLabel}</span>
+                                                    {badgeCount ? <Badge count={badgeCount} /> : null}
+                                                </a>
+                                            );
+                                        })}
+                                    </div>
+                                ) : null}
+                            </div>
                         );
                     })}
                 </nav>
